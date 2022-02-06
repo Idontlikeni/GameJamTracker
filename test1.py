@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-link = 'https://itch.io/jams/upcoming/featured'
+link = 'https://itch.io/jams'
 responce = requests.get(link).text
 soup = BeautifulSoup(responce, 'html.parser')
 block = soup.find_all('div', class_="jam")
