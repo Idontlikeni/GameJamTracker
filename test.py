@@ -1,6 +1,7 @@
 from flask import Flask
 import requests
 from bs4 import BeautifulSoup
+import datetime as dt
 
 names = []
 dates = []
@@ -20,14 +21,24 @@ for i in quotes:
     if i.text != '':
         names.append(i.text)
 for i in dat:
-    dates.append(i.text)
+    if 'title' in str(i):
+        time = i.text[:-1].split('T')
+        datet = list(map(int, time[0].split('-')))
+        my_date = dt.date(datet[0], datet[1], datet[-1])
+        datet = list(map(int, time[1].split(':')))
+        my_time = dt.time(datet[0], datet[1], datet[-1])
+        my_datetime = dt.datetime.combine(my_date, my_time)
+        delta_time1 = dt.timedelta(hours=3)
+        dates.append(my_datetime + delta_time1)
+    else:
+        dates.append('Ongoing')
 for i in lin:
     links.append(str(i).split('a href="')[1].split('"')[0])
 links = links[::2]
 
 for i in range(len(names)):
     htm += f'</br><br>{names[i]}</br><img src="{images[i]}"></img></br>{dates[i]}</br><a href="https://itch.io{links[i]}">https://itch.io{links[i]}</a>'
-    print(names[i], images[i], dates[i], links[i], sep='\n')
+    # print(names[i], images[i], dates[i], links[i], sep='\n')
 
 
 app = Flask(__name__)
