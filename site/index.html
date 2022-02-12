@@ -15,54 +15,58 @@
 
 <body>
     <nav>
-    <div class="nav-wrapper">
-      <a href="#!" class="brand-logo center">GameJamBot</a>
-    </div>
-  </nav>
-  <br><br>
-   <div class="container">
-    <div class="center-align">
-        <img class="responsive-img" src="https://img.itch.zone/aW1hZ2UyL2phbS8zMTY0MTAvNzkyNDcyNS5wbmc=/original/fBcoJf.png" alt="">
-    </div>
-    <div class="tc center-align">
-        <div class="timer center-align">
-           <div class="obv">
-            <h1 class="time shadowtext">Starts in 00 days 00 hours 00 minutes</h1>
-            <h2 class="shadowtext">Joined: 2000</h2>
-            </div>
+        <div class="nav-wrapper">
+            <a href="#!" class="brand-logo center">GameJamBot</a>
         </div>
-    </div>
-    <div class="cards row">
-        <div class="col l4 s12">
-            <a href="#!">
-           <div class="card">
-            <img class="responsive-img" src="https://img.itch.zone/aW1hZ2UyL2phbS8zMTY0MTAvNzkyNDcyNS5wbmc=/original/fBcoJf.png" alt="">
-            </div>
-            </a>
-        </div>
-        <div class="col l4 s12">
-            <a href="#!">
-           <div class="card">
-            <img class="responsive-img" src="https://img.itch.zone/aW1hZ2UyL2phbS8zMTY0MTAvNzkyNDcyNS5wbmc=/original/fBcoJf.png" alt="">
-            </div>
-            </a>
-        </div>
-        <div class="col l4 s12">
-          <a href="#!">
-           <div class="card">
-            <img class="responsive-img" src="https://img.itch.zone/aW1hZ2UyL2phbS8zMTY0MTAvNzkyNDcyNS5wbmc=/original/fBcoJf.png" alt="">
-            </div>
-            </a>
-        </div>
-    </div>
-    <br>
+    </nav>
+    <br><br>
     <div class="container">
-        <div class="center-align row downloadbtn">
-            <a href="#!">DOWNLOAD DISCORD BOT</a>
+        <div class="center-align">
+            <img class="responsive-img" src="https://img.itch.zone/aW1hZ2UyL2phbS8zMTY0MTAvNzkyNDcyNS5wbmc=/original/fBcoJf.png" alt="">
         </div>
-    </div>
+        <div class="tc center-align">
+            <div class="timer center-align">
+                <div class="obv">
+                    <h1 id="demo" class="time shadowtext">Starts in 00 days 00 hours 00 minutes</h1>
+                    <h2 class="shadowtext">Joined: 2000</h2>
+                </div>
+            </div>
+        </div>
+        <div class="cards row">
+            <div class="col l4 s12">
+                <a href="#!">
+                    <div class="card">
+                        <img class="responsive-img" src="https://img.itch.zone/aW1hZ2UyL2phbS8zMTY0MTAvNzkyNDcyNS5wbmc=/original/fBcoJf.png" alt="">
+                    </div>
+                </a>
+            </div>
+            <div class="col l4 s12">
+                <a href="#!">
+                    <div class="card">
+                        <img class="responsive-img" src="https://img.itch.zone/aW1hZ2UyL2phbS8zMTY0MTAvNzkyNDcyNS5wbmc=/original/fBcoJf.png" alt="">
+                    </div>
+                </a>
+            </div>
+            <div class="col l4 s12">
+                <a href="#!">
+                    <div class="card">
+                        <img class="responsive-img" src="https://img.itch.zone/aW1hZ2UyL2phbS8zMTY0MTAvNzkyNDcyNS5wbmc=/original/fBcoJf.png" alt="">
+                    </div>
+                </a>
+            </div>
+        </div>
+        <br>
+        <div class="container">
+            <div class="center-align row downloadbtn">
+                <a href="#!">DOWNLOAD DISCORD BOT</a>
+            </div>
+        </div>
     </div>
     <br><br><br><br>
+<!--
+    <p id="demo" class="white-text"></p>
+    <br><br><br><br>
+-->
     <div class="row fb">
         <div class="footer-block">
             <div class="container">
@@ -83,6 +87,61 @@
         </div>
     </div>
     <script type="text/javascript" src="js/materialize.min.js"></script>
+    <script>
+        let d = "days";
+        let h = "hours";
+        let m = "minutes";
+        let s = "seconds";
+        // Set the date we're counting down to
+        var countDownDate = new Date("Jan 5, 2024 15:37:25").getTime();
+
+        // Update the count down every 1 second
+        var x = setInterval(function() {
+
+            // Get today's date and time
+            var now = new Date().getTime();
+
+            // Find the distance between now and the count down date
+            var distance = countDownDate - now;
+
+            // Time calculations for days, hours, minutes and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Display the result in the element with id="demo"
+            if (days == 1) {
+                d = "day";
+            } else {
+                d = "days";
+            }
+            if (hours == 1) {
+                h = "hour";
+            } else {
+                h = "hours";
+            }
+            if (minutes == 1) {
+                m = "minute";
+            } else {
+                m = "mitutes";
+            }
+            if (seconds == 1) {
+                s = "second";
+            } else {
+                s = "seconds";
+            }
+            document.getElementById("demo").innerHTML = "Starts in " + days + " " + d + " " + hours + " " + h + " " +
+                minutes + " " + m + " " + seconds + " " + s;
+
+            // If the count down is finished, write some text
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("demo").innerHTML = "EXPIRED";
+            }
+        }, 1000);
+
+    </script>
 </body>
 
 </html>
