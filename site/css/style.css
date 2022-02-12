@@ -1,0 +1,104 @@
+.timer {
+    margin-top: -30%;
+    padding: 0;
+    width: 100%;
+    color: white;
+}
+
+h1 {
+    margin: 0;
+}
+
+html {
+    margin: 0;
+}
+
+.time {
+    font-size: 4rem;
+}
+
+.tc {
+    display: flex;
+}
+
+.obv {
+    background-color: rgba(15, 42, 63, 0.5);
+    border-radius: 10px;
+    padding: 30px 0;
+}
+
+body {
+    background-color: #08141e;
+}
+
+.cards {
+    margin: 70px 0;
+}
+
+.card {
+    border-style: solid;
+    border-radius: 5px;
+    border-color: #99AAB5;
+    border: none;
+    background-color: #0f2a3f;
+}
+
+.downloadbtn {
+    width: 40%;
+    font-size: 24px;
+    background-color: #c3a38a;
+    transition: 1s;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+.downloadbtn:hover {
+    background-color: #997577;
+    color: #F6F6F6;
+    transition: 1s;
+}
+
+.downloadbtn a {
+    color: white;
+}
+
+nav {
+    position: fixed;
+    background-color: #0f2a3f;
+    padding: 5px 0;
+    height: 74px;
+    z-index: 0;
+    transition: 1s;
+}
+
+nav a:hover {
+    color: #f6d6bd;
+    transition: 1s;
+}
+
+nav a {
+    transition: 1s;
+}
+
+.card {
+    z-index: -1;
+}
+
+.fb {
+    background-color: #0f2a3f;
+    margin: 0;
+    padding: 5px 0;
+}
+
+.soc {
+    color: white;
+    font-size: 20px;
+    margin: 15px 0;
+    margin-right: 20px;
+    transition: 1s;
+}
+
+.soc:hover {
+    color: #f6d6bd;
+    transition: 1s;
+}
