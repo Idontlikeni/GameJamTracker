@@ -1,5 +1,5 @@
 .timer {
-    margin-top: -30%;
+    margin-top: -40%;
     padding: 0;
     width: 100%;
     color: white;
@@ -19,6 +19,22 @@ html {
 
 .tc {
     display: flex;
+}
+
+.nextimg img {
+    float: left;
+    margin-right: 3%;
+    max-width: 17%;
+}
+
+.nextimg h3 {
+    float: left;
+    max-width: 80%;
+    margin-top: 0rem;
+}
+
+.nextimg {
+    margin: auto 0;
 }
 
 .obv {
@@ -42,6 +58,32 @@ body {
     border: none;
     background-color: #2C2F33;
     box-shadow: -2px -2px #5ff, 2px 2px #f5f;
+    color: white;
+}
+
+.card p {
+    margin: 0;
+    margin-top: 10%;
+}
+
+.card .row {
+    margin: 0; !important
+}
+
+.name {
+    max-width: 65%;
+    float: left;
+    margin-left: 3%;
+}
+
+.starts {
+    margin: 0;
+    margin-top: -8%;
+}
+
+.cardimg {
+    float: left;
+    max-width: 32%;
 }
 
 .downloadbtn {

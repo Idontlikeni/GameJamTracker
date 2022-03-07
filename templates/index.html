@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 
@@ -13,7 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@425&display=swap" rel="stylesheet">
     <title>GameJamBot | Get start</title>
     <link rel="icon" type="image/png" href="../static/img/icon_without_background.png">
-<script type="text/javascript" src="http://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=WdS_HMNqzNc1XkbdwmlmqBd61Y7BND0c1vFzkXmk6qJARz9tjf2ziCn2KeSseNgf" charset="UTF-8"></script></head>
+    <script type="text/javascript" src="http://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=WdS_HMNqzNc1XkbdwmlmqBd61Y7BND0c1vFzkXmk6qJARz9tjf2ziCn2KeSseNgf" charset="UTF-8"></script>
+</head>
 
 <body>
     <!--
@@ -25,17 +25,25 @@
 -->
     <br><br>
     <h1 class="bold white-text center-align">Next Jam:</h1>
-    <h3 class="bold white-text center-align">Godot Wild Jam #43</h3>
     <br><br>
     <div class="container">
-        <div class="center-align im">
+        <div class="im center-align">
             <img class="responsive-img" src="https://lahorde.tech/wp-content/uploads/2021/09/Game-jam-lexique-jeu-vide%CC%81o-programmation-1024x576.webp" alt="">
         </div>
         <div class="tc center-align">
             <div class="timer center-align">
                 <div class="obv">
+                    <div class="container">
+                       <a href="{{ lin1 }}" target="_blank">
+                        <div class="row nextimg center-align">
+                            <img class="responsive-img" src="{{ im1 }}" alt="">
+                            <h3 class="bold white-text center-align">{{ name1 }}</h3>
+                        </div>
+                        </a>
+                    </div>
+                    <br>
                     <h1 id="demo" class="time shadowtext">Starts in 00 days 00 hours 00 minutes</h1>
-                    <h2 class="shadowtext">Joined: 134</h2>
+                    <h2 class="shadowtext">Joined: {{ join1 }}</h2>
                 </div>
             </div>
         </div>
@@ -43,23 +51,56 @@
         <h2 class="bold white-text center-align">3 subsequent Jams:</h2>
         <div class="cards row">
             <div class="col l4 s12">
-                <a href="#!">
+                <a href="{{ lin2 }}" target="_blank">
                     <div class="card">
-                        <img class="responsive-img" src="https://img.itch.zone/aW1nLzc3ODUyMjMuanBn/140x111%23/D0%2BOsO.jpg" alt="">
+                        <div class="row">
+                            <div class="cardimg"><img class="responsive-img" src="{{ im2 }}" alt=""></div>
+                            <div class="name">
+                                <h5>{{ name2 }}</h5>
+                            </div>
+                        </div>
+                        <div class="starts">
+                            <p>Starts in: {{ time2 }}</p>
+                        </div>
+                        <div class="starts">
+                            <p>{{ join2 }} Joined</p>
+                        </div>
                     </div>
                 </a>
             </div>
             <div class="col l4 s12">
-                <a href="#!">
+                <a href="{{ lin3 }}" target="_blank">
                     <div class="card">
-                        <img class="responsive-img" src="https://img.itch.zone/aW1nLzc4NjQxMjMucG5n/140x111%23/yesKUZ.png" alt="">
+                        <div class="row">
+                            <div class="cardimg"><img class="responsive-img" src="{{ im3 }}" alt=""></div>
+                            <div class="name">
+                                <h5>{{ name3 }}</h5>
+                            </div>
+                        </div>
+                        <div class="starts">
+                            <p>Starts in: {{ time3 }}</p>
+                        </div>
+                        <div class="starts">
+                            <p>{{ join3 }} Joined</p>
+                        </div>
                     </div>
                 </a>
             </div>
             <div class="col l4 s12">
-                <a href="#!">
+                <a href="{{ lin4 }}" target="_blank">
                     <div class="card">
-                        <img class="responsive-img" src="https://img.itch.zone/aW1nLzgxMzQ5MTIucG5n/140x111%23/2%2BJeKG.png" alt="">
+                        <div class="row">
+                            <div class="cardimg"><img class="responsive-img" src="{{ im4 }}" alt=""></div>
+                            <div class="name">
+                                <h5>{{ name4 }}</h5>
+                            </div>
+                        </div>
+                        <div class="starts">
+                            <p>Starts in: {{ time4 }}</p>
+                        </div>
+                        <div class="starts">
+                            <p>{{ join4 }} Joined</p>
+                        </div>
                     </div>
                 </a>
             </div>
@@ -102,7 +143,7 @@
         let m = "minutes";
         let s = "seconds";
         // Set the date we're counting down to
-        var countDownDate = new Date("2022-03-11 23:00:00").getTime();
+        var countDownDate = new Date("{{ time1 }}").getTime();
 
         // Update the count down every 1 second
         var x = setInterval(function() {

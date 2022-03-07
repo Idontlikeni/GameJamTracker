@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 import requests
 from bs4 import BeautifulSoup
 import datetime as dt
@@ -45,13 +45,42 @@ for i in range(len(names)):
     htm += f'</br><br>{names[i]}</br><img src="{images[i]}"></img></br>{dates[i]}</br><a href="https://itch.io{links[i]}">https://itch.io{links[i]}</a>'
     # print(names[i], images[i], dates[i], links[i], sep='\n')
 
-
+time1 = min(dates)
+indx = dates.index(time1)
+name1 = names[indx]
+join1 = joined[indx]
+im1 = images[indx]
+lin1 = f'https://itch.io{links[indx]}'
+dates1 = dates[:]
+dates1.remove(time1)
+time2 = min(dates1)
+indx = dates.index(time2)
+name2 = names[indx]
+join2 = joined[indx]
+im2 = images[indx]
+lin2 = f'https://itch.io{links[indx]}'
+dates1.remove(time2)
+time3 = min(dates1)
+indx = dates.index(time3)
+name3 = names[indx]
+join3 = joined[indx]
+im3 = images[indx]
+lin3 = f'https://itch.io{links[indx]}'
+dates1.remove(time3)
+time4 = min(dates1)
+indx = dates.index(time4)
+name4 = names[indx]
+join4 = joined[indx]
+im4 = images[indx]
+lin4 = f'https://itch.io{links[indx]}'
 app = Flask(__name__)
 
 
 @app.route('/')
 def qwertyj():
-    return 
+    return render_template('index.html', time1=time1, name1=name1, join1=join1, im1=im1, lin1=lin1, lin2=lin2,
+                           time2=time2, name2=name2, join2=join2, time3=time3, im2=im2, im3=im3, lin3=lin3,
+                           name3=name3, join3=join3, time4=time4, name4=name4, join4=join4, im4=im4, lin4=lin4)
 
 
 if __name__ == '__main__':
