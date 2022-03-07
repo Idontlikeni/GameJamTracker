@@ -51,7 +51,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def qwertyj():
-    return
+    return 
 
 
 if __name__ == '__main__':
