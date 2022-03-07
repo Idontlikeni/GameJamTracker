@@ -84,6 +84,8 @@ nav a {
 
 .card {
     z-index: -1;
+    padding: 10px;
+    margin: 10px 0;
 }
 
 .fb {
