@@ -74,6 +74,21 @@ join4 = joined[indx]
 im4 = images[indx]
 lin4 = f'https://itch.io{links[indx]}'
 app = Flask(__name__)
+time2 = time2.split()
+x = time2[0].split('-')
+x.reverse()
+time2[0] = '.'.join(x)
+time2 = ' '.join(time2)
+time3 = time3.split()
+x = time3[0].split('-')
+x.reverse()
+time3[0] = '.'.join(x)
+time3 = ' '.join(time3)
+time4 = time4.split()
+x = time4[0].split('-')
+x.reverse()
+time4[0] = '.'.join(x)
+time4 = ' '.join(time4)
 
 
 @app.route('/')
@@ -84,4 +99,4 @@ def qwertyj():
 
 
 if __name__ == '__main__':
-    app.run(port=8080, host='127.0.0.1')
+    app.run(port=8085, host='127.0.0.1')
