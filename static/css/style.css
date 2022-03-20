@@ -1,5 +1,5 @@
 .timer {
-    margin-top: -40%;
+    margin-top: -36%;
     padding: 0;
     width: 100%;
     color: white;
@@ -38,36 +38,36 @@ html {
 }
 
 .obv {
-    background-color: rgba(44, 47, 51, 0.5);
+    background-color: rgba(44, 47, 51, 0);
     border-radius: 10px;
     padding: 30px 0;
 }
 
 body {
-    background-color: #23272A;
+    background-color: #282828;
 }
 
 .cards {
     margin: 70px 0;
 }
 
-.card {
-    border-style: solid;
-    border-radius: 5px;
-    border-color: #99AAB5;
+.card1 {
     border: none;
-    background-color: #2C2F33;
-    box-shadow: -2px -2px #5ff, 2px 2px #f5f;
     color: white;
+    background-color: #1A1A1D;
+    z-index: -1;
+    padding: 10px;
+    border-radius: 5px;
 }
 
-.card p {
+.card1 p {
     margin: 0;
     margin-top: 10%;
 }
 
-.card .row {
-    margin: 0; !important
+.card1 .row {
+    margin: 0;
+     !important
 }
 
 .name {
@@ -89,15 +89,14 @@ body {
 .downloadbtn {
     width: 40%;
     font-size: 24px;
-    background-color: #404EED;
+    background-color: #3500D3;
     transition: 1s;
-    border-radius: 5px;
-    padding: 20px;
-    box-shadow: -2px -2px #5ff, 2px 2px #f5f;
+    border-radius: 10px;
+    padding: 12px;
 }
 
 .downloadbtn:hover {
-    background-color: #5865F2;
+    background-color: #404EED;
     color: #F6F6F6;
     transition: 1s;
 }
@@ -124,15 +123,10 @@ nav a {
     transition: 1s;
 }
 
-.card {
-    z-index: -1;
-    padding: 10px;
-    margin: 10px 0;
-}
-
 .fb {
-    background-color: #404EED;
+    background: linear-gradient(45deg, #3500D3 32%, #C3073F);
     margin: 0;
+    border: none;
     padding: 5px 0;
 }
 
@@ -145,7 +139,7 @@ nav a {
 }
 
 .soc:hover {
-    color: #99AAB5;
+    color: #C3073F;
     transition: 1s;
 }
 
@@ -159,4 +153,31 @@ body {
 
 .shadowtext {
     text-shadow: -2px -2px #5ff, 2px 2px #f5f;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+::-webkit-scrollbar-thumb {
+    border-style: solid;
+    border-color: #C3073F;
+    border-width: 1px;
+    border: none;
+    border-radius: 8px;
+    background-color: #1A1A1D;
+    background-color: #131314;
+/*    background: linear-gradient(75deg, #3500D3, #1A1A1D 8%, 99%, #C3073F)*/
+}
+
+::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.coolbackground {
+    position: relative;
+    background: linear-gradient(45deg, #3500D3 32%, #C3073F);
+    padding: 2px;
+    border-radius: 6px;
 }
