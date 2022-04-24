@@ -1,27 +1,42 @@
-
 # This example requires the 'members' privileged intents
 
 from turtle import title
 import discord
 from discord.ext import commands
+from discord.utils import get
 import random
 import requests
 from bs4 import BeautifulSoup
 import datetime as dt
+import asyncio
+from discord_components import DiscordComponents, Button, ButtonStyle, ActionRow, ComponentsBot
+import logging
+
+
 link = 'https://itch.io/jams/upcoming/featured'
 description = '''An example bot to showcase the discord.ext.commands extension
 module.
 There are a number of utility commands being showcased here.'''
-
+list_len = 5
 intents = discord.Intents.all()
+intents.members = True
+bot = ComponentsBot(command_prefix='/', description=description, intents=intents)
 
-bot = commands.Bot(command_prefix='/', description=description, intents=intents)
+logger = logging.getLogger('discord')
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler()
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler)
 
-role_message_id = 942058070215905341 # ID of the message that can be reacted to to add/remove a role.
+data = []
+role_message_id = 942058070215905341  # ID of the message that can be reacted to to add/remove a role.
 emoji_to_role = {
-    discord.PartialEmoji(name='1️⃣'): 942069045543456798, # ID of the role associated with unicode emoji '🔴'.
-    discord.PartialEmoji(name='2️⃣'): 942070012921933884, # ID of the role associated with unicode emoji '🟡'.
-    discord.PartialEmoji(name='3️⃣'): 942070442515116073, # ID of the role associated with unicode emoji '🟡'.
+    discord.PartialEmoji(name='1️⃣'): 942069045543456798,
+    # ID of the role associated with unicode emoji '🔴'.
+    discord.PartialEmoji(name='2️⃣'): 942070012921933884,
+    # ID of the role associated with unicode emoji '🟡'.
+    discord.PartialEmoji(name='3️⃣'): 942070442515116073,
+    # ID of the role associated with unicode emoji '🟡'.
 }
 
 
@@ -52,53 +67,12 @@ def parser(url):
     return htm
 
 
-@bot.event
-async def on_ready():
-    print('Logged in as')
-    print(bot.user.name)
-    print(bot.user.id)
-    print('------')
-
-@bot.command()
-async def add(ctx, left: int, right: int):
-    """Adds two numbers together."""
-    await ctx.send(left + right)
-
-@bot.command()
-async def roll(ctx, dice: str):
-    """Rolls a dice in NdN format."""
-    try:
-        rolls, limit = map(int, dice.split('d'))
-    except Exception:
-        await ctx.send('Format has to be in NdN!')
-        return
-
-    result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
-    await ctx.send(result)
-
-@bot.command(description='For when you wanna settle the score some other way')
-async def choose(ctx, *choices: str):
-    """Chooses between multiple choices."""
-    await ctx.send(random.choice(choices))
-
-@bot.command()
-async def repeat(ctx, times: int, content='repeating...'):
-    """Repeats a message multiple times."""
-    for i in range(times):
-        await ctx.send(content)
-
-@bot.command()
-async def joined(ctx, member: discord.Member):
-    """Says when a member joined."""
-    await ctx.send('{0.name} joined in {0.joined_at}'.format(member))
-
-@bot.command()
-async def gst(ctx):
+def top(count: int):
     names = []
     dates = []
     links = []
-    htm = ''
     images = []
+    joined = []
     url = 'https://itch.io/jams'
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'lxml')
@@ -106,6 +80,7 @@ async def gst(ctx):
     dat = soup.find_all('span', class_="date_countdown")
     imag = soup.find_all('div', class_='jam_cover')
     lin = soup.find_all(['div'], class_="conversion_link_widget")
+    jo = soup.find_all(['div'], class_="stat")
     for i in imag:
         images.append(str(i).split('data-background_image="')[1].split('"')[0])
     for i in quotes:
@@ -127,9 +102,167 @@ async def gst(ctx):
     for i in lin:
         links.append(str(i).split('a href="')[1].split('"')[0])
     links = links[::2]
+    for i in jo:
+        joined.append(i.text.split()[0])
+    data = []
     for i in range(len(names)):
-        await ctx.send(f'{names[i]}\n{dates[i]}\nhttps://itch.io{links[i]}')
+        data.append(
+            (names[i], dates[i], links[i], images[i], int(''.join(joined[i].split(',')))))
+    for i in data:
+        if 'Ongoing' in i[1]:
+            data.remove(i)
+    data = sorted(data, key=lambda student: student[-1])
+    data.reverse()
+    data = data[:count]
+    for i in data:
+        print(i)
+    return data
 
+
+
+async def timer(name, date, context, delta):
+    i = 0
+    while True:
+        msg = await context.fetch_message(role_message_id)
+        arr = top(list_len)
+        await msg.edit(content='\n'.join([f"{i + 1} - {arr[i][0]}" for i in range(list_len)]))
+        i += 1
+        await asyncio.sleep(delta)
+
+
+async def update_data():
+    global data
+    names = []
+    dates = []
+    links = []
+    images = []
+    joined = []
+    url = 'https://itch.io/jams'
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'lxml')
+    quotes = soup.find_all('div', class_="conversion_link_widget")
+    dat = soup.find_all('span', class_="date_countdown")
+    imag = soup.find_all('div', class_='jam_cover')
+    lin = soup.find_all(['div'], class_="conversion_link_widget")
+    jo = soup.find_all(['div'], class_="stat")
+    for i in imag:
+        images.append(str(i).split('data-background_image="')[1].split('"')[0])
+    for i in quotes:
+        if i.text != '':
+            names.append(i.text)
+    for i in dat:
+        if 'title' in str(i):
+            ong = ''
+        else:
+            ong = 'Ongoing, ends: '
+        time = i.text[:-1].split('T')
+        datet = list(map(int, time[0].split('-')))
+        my_date = dt.date(datet[0], datet[1], datet[-1])
+        datet = list(map(int, time[1].split(':')))
+        my_time = dt.time(datet[0], datet[1], datet[-1])
+        my_datetime = dt.datetime.combine(my_date, my_time)
+        delta_time1 = dt.timedelta(hours=3)
+        dates.append(ong + str(my_datetime + delta_time1))
+    for i in lin:
+        links.append(str(i).split('a href="')[1].split('"')[0])
+    links = links[::2]
+    for i in jo:
+        joined.append(i.text.split()[0])
+    data = []
+    for i in range(len(names)):
+        data.append((names[i], dates[i], links[i], images[i], int(''.join(joined[i].split(',')))))
+
+
+@bot.event
+async def on_ready():
+    print('Logged in as')
+    print(bot.user.name)
+    print(bot.user.id)
+    print('------')
+
+
+@bot.command()
+async def add(ctx, left: int, right: int):
+    """Adds two numbers together."""
+    await ctx.send(left + right)
+
+
+@bot.command()
+async def roll(ctx, dice: str):
+    """Rolls a dice in NdN format."""
+    try:
+        rolls, limit = map(int, dice.split('d'))
+    except Exception:
+        await ctx.send('Format has to be in NdN!')
+        return
+
+    result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
+    await ctx.send(result)
+
+
+@bot.command(description='For when you wanna settle the score some other way')
+async def choose(ctx, *choices: str):
+    """Chooses between multiple choices."""
+    await ctx.send(random.choice(choices))
+
+
+@bot.command()
+async def repeat(ctx, times: int, content='repeating...'):
+    """Repeats a message multiple times."""
+    for i in range(times):
+        await ctx.send(content)
+
+
+@bot.command()
+async def joined(ctx, member: discord.Member):
+    """Says when a member joined."""
+    await ctx.send('{0.name} joined in {0.joined_at}'.format(member))
+
+
+@bot.command()
+async def gst(ctx):
+    global data
+    jam = 0
+    await update_data()
+    #  print(data)
+    data1 = data[jam]
+    msg = await ctx.send(
+        embed=discord.Embed(title=data1[0], description=f'Date: {data1[1]} \n Joined: {data1[-1]}').set_image(
+            url=data1[3]),
+        components=[ActionRow(Button(style=ButtonStyle.blue, label='Previous', custom_id='prev'),
+                              Button(style=ButtonStyle.URL, label='url', url=f'https://itch.io{data1[2]}',
+                                     custom_id='lin'),
+                              Button(style=ButtonStyle.green, label='Next', custom_id='nex'))
+                    ]
+    )
+    while True:
+        print('a')
+        response = await bot.wait_for("button_click")
+        print(response.channel, ctx.channel)
+        if response.channel == ctx.channel:
+            if response.component.label == 'Next':
+                jam += 1
+                if jam == len(data):
+                    jam = 0
+            if response.component.label == 'Previous':
+                jam -= 1
+                if jam == -1:
+                    jam = len(data) - 1
+        data1 = data[jam]
+        await msg.edit(embed=discord.Embed(title=data1[0],
+                                            description=f'Date: {data1[1]} \n Joined: {data1[-1]}').set_image(
+            url=data1[3]),
+            components=[ActionRow(Button(style=ButtonStyle.blue, label='Previous', custom_id='prev'),
+                                    Button(style=ButtonStyle.URL, label='url',
+                                            url=f'https://itch.io{data1[2]}', custom_id='lin'),
+                                    Button(style=ButtonStyle.green, label='Next', custom_id='nex'))
+                        ])
+        try:
+            await response.respond()
+            print('b')
+        except:
+            print('c')
+            pass
 
     # global link
     # """Says when a member joined."""
@@ -146,16 +279,43 @@ async def ust(ctx, profilename: str):
 
 
 @bot.command()
+async def start_timer(ctx):
+    await asyncio.gather(
+        asyncio.create_task(timer("test", "sadasda", ctx, 10)))
+
+
+@bot.command()
 async def helpb(ctx):
     embed = discord.Embed(title="Help Command", description='''`/ust <profilename>` - check user profile
     `/gst` - show upcoming gamejams''', colour=0x87CEEB)
-    await ctx.send(embed=embed)   
+    await ctx.send(embed=embed)
 
 
 @bot.command()
 async def rating(ctx):
     embed = discord.Embed(title="Rating", description='''''', colour=0x87CEEB)
-    await ctx.send(embed=embed)   
+    await ctx.send(embed=embed)
+
+
+@bot.command()
+async def set_message_id(ctx, msg_id: int):
+    global role_message_id
+    role_message_id = msg_id
+    await asyncio.gather(
+        asyncio.create_task(timer("test", "sadasda", ctx, 10)))
+
+
+@bot.command()
+async def write_top(ctx, num:int):
+    global list_len
+    await ctx.send('\n'.join([f"{i + 1} - " for i in range(num)]))
+    list_len = num
+
+
+@bot.command()
+async def add_role(ctx, emoji, role_id: int):
+    emoji_to_role[discord.PartialEmoji(name=emoji)] = role_id
+    print(f'{emoji} set to {get(ctx.guild.roles, id=role_id)}')
 
 
 @bot.group()
@@ -166,14 +326,17 @@ async def cool(ctx):
     if ctx.invoked_subcommand is None:
         await ctx.send('No, {0.subcommand_passed} is not cool'.format(ctx))
 
+
 @cool.command(name='bot')
 async def _bot(ctx):
     """Is the bot cool?"""
     await ctx.send('Yes, the bot is cool.')
 
+
 @bot.event
 async def on_raw_reaction_add(payload):
-    
+    print(payload.message_id, role_message_id)
+
     """Gives a role based on a reaction emoji."""
     # Make sure that the message the user is reacting to is the one we care about.
     if payload.message_id != role_message_id:
@@ -201,6 +364,7 @@ async def on_raw_reaction_add(payload):
     except discord.HTTPException:
         # If we want to do something in case of errors we'd do it here.
         pass
+
 
 @bot.event
 async def on_raw_reaction_remove(payload):
@@ -239,22 +403,12 @@ async def on_raw_reaction_remove(payload):
         print('5')
         # If we want to do something in case of errors we'd do it here.
         pass
+
+
 # ---------------------------------main-------------------------------------------
 link = 'https://itch.io/jams/upcoming/featured'
 responce = requests.get(link).text
 soup = BeautifulSoup(responce, 'html.parser')
 #  print(soup.prettify())
 # ---------------------------------main-------------------------------------------
-bot.run('code')
-
-# import discord
-
-# class MyClient(discord.Client):
-#     async def on_ready(self):
-#         print('Logged on as {0}!'.format(self.user))
-
-#     async def on_message(self, message):
-#         print('Message from {0.author}: {0.content}'.format(message))
-
-# client = MyClient()
-# client.run('OTM2OTE2Mzk3NzA2MDY3OTcw.YfUJZA.g4-OmOpRczcQajOfzs86pMvoXMg')
+bot.run('OTM2OTE2Mzk3NzA2MDY3OTcw.YfUJZA.TRWlaEnv2tS3mae5bCy3eXLXElw')
