@@ -1,5 +1,5 @@
 .timer {
-    margin-top: -36%;
+    margin-top: -41%;
     padding: 0;
     width: 100%;
     color: white;
@@ -21,20 +21,22 @@ html {
     display: flex;
 }
 
+/*
 .nextimg img {
     float: left;
     margin-right: 3%;
     max-width: 17%;
 }
+*/
 
 .nextimg h3 {
-    float: left;
-    max-width: 80%;
-    margin-top: 0rem;
+    margin-top: 5px;
 }
 
 .nextimg {
     margin: auto 0;
+    align-content: center;
+    margin-top: 0.7rem;
 }
 
 .obv {
@@ -178,6 +180,13 @@ body {
 .coolbackground {
     position: relative;
     background: linear-gradient(45deg, #3500D3 32%, #C3073F);
+    padding: 2px;
+    border-radius: 6px;
+}
+
+.coolbackground2 {
+    position: relative;
+    background: linear-gradient(315deg, #3500D3 32%, #C3073F);
     padding: 2px;
     border-radius: 6px;
 }

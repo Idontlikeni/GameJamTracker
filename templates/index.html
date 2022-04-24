@@ -34,16 +34,20 @@
             <div class="timer center-align">
                 <div class="obv">
                     <div class="container">
+                       <div class="coolbackground2">
+                       <div class="card1">
                         <a href="{{ lin1 }}" target="_blank">
-                            <div class="row nextimg center-align">
-                                <img class="responsive-img" src="{{ im1 }}" alt="">
-                                <h3 class="bold white-text center-align">{{ name1 }}</h3>
+                            <div class="nextimg center-align">
+                                <img class="center-align responsive-img" src="{{ im1 }}" alt="">
+                                <h3 class="shadowtext center-align bold white-text center-align">{{ name1 }}</h3>
                             </div>
                         </a>
                     </div>
+                    </div>
+                    </div>
                     <br>
-                    <h1 id="demo" class="time shadowtext">Starts in 00 days 00 hours 00 minutes</h1>
-                    <h2 class="shadowtext">Joined: {{ join1 }}</h2>
+                    <h1 id="demo" class="time">Starts in 00 days 00 hours 00 minutes</h1>
+                    <h2 class="">Joined: {{ join1 }}</h2>
                 </div>
             </div>
         </div>
@@ -114,7 +118,7 @@
         <br>
         <div class="container">
             <div class="center-align row downloadbtn">
-                <a href="https://discord.com/oauth2/authorize?client_id=936916397706067970&permissions=537159744&scope=applications.commands%20bot" target="_blank">DOWNLOAD DISCORD BOT</a>
+                <a href="https://discord.com/oauth2/authorize?client_id=936916397706067970&permissions=537159744&scope=applications.commands%20bot" target="_blank">INVITE DISCORD BOT</a>
             </div>
         </div>
     </div>
@@ -137,7 +141,7 @@
                     <a href="https://ok.ru/" target="_blank" rel="nofollow"><i class="soc fab fa-odnoklassniki"></i></a>
                 </div>
                 <div class="right-align col s12 l6">
-                    <p class="white-text">Copiright &copy; 2022. | Made by IE squad.</p>
+                    <p class="white-text">Copiright &copy; 2022. | <a class="white-text" href="https://github.com/Idontlikeni/GameJamTracker" target="_blank">Made by IE squad.</a></p>
                 </div>
             </div>
         </div>
@@ -187,8 +191,7 @@
             } else {
                 s = "seconds";
             }
-            document.getElementById("demo").innerHTML = "Starts in " + days + " " + d + " " + hours + " " + h + " " +
-                minutes + " " + m + " " + seconds + " " + s;
+            document.getElementById("demo").innerHTML = "Starts in " + days + "d " + hours + "h " + minutes + "m " + seconds + "s";
 
             // If the count down is finished, write some text
             if (distance < 0) {
