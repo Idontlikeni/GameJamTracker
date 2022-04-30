@@ -58,7 +58,7 @@ def parser(url):
     ln = soup.find_all('a', class_="thumb_link game_link")
     for i in ln:
         links.append(str(i).split('href="')[1].split('"')[0])
-    # print(games, links, imgs, sep='\n')
+    print(games, links, imgs, sep='\n')
     for i in range(len(games)):
         htm += f'abob{games[i]}\n real shit {links[i]}\n pmg {links[i]}'
     return htm
@@ -232,9 +232,7 @@ async def gst(ctx):
                     ]
     )
     while True:
-        print('a')
         response = await bot.wait_for("button_click")
-        print(response.channel, ctx.channel)
         if response.channel == ctx.channel:
             if response.component.label == 'Next':
                 jam += 1
@@ -270,8 +268,114 @@ async def gst(ctx):
 
 
 @bot.command()
-async def ust(ctx, profilename: str):
-    await ctx.send(parser(f'https://itch.io/profile/{profilename}'))
+async def ust(ctx, *profilename: str):
+    # await ctx.send(parser(f'https://itch.io/profile/{profilename}'))
+    profilename = '-'.join(profilename).lower()
+    jam = 0
+    data = []
+    games = []
+    imgs = []
+    links = []
+    stats = []
+    response = requests.get(f'https://itch.io/profile/{profilename}')
+    soup = BeautifulSoup(response.text, 'lxml')
+    name1 = soup.find_all('div', class_="stat_header_widget")
+    soup1 = BeautifulSoup(str(name1[0]), 'lxml')
+    name = str(soup1.find_all('h2')[0])
+    name = name.split('>')[1].split('<')[0]
+    gms = soup.find_all('a', class_="title game_link")
+    statiscs = soup.find_all('div', class_="stat_box")
+    ava = str(soup.find_all('div', class_="avatar")[0]).split("url('")[1].split("')")[0]
+    print(ava)
+    rg = soup.find_all('abbr')
+    stats.append(f'Registration date {rg[0].text}')
+    for i in gms:
+        games.append(i.text)
+    im = soup.find_all('div', class_="game_thumb")
+    for i in im:
+        imgs.append(str(i).split('url(\'')[1].split('\')')[0])
+    ln = soup.find_all('a', class_="thumb_link game_link")
+    for i in ln:
+        links.append(str(i).split('href="')[1].split('"')[0])
+    for i in statiscs:
+        i = str(i).split('</div><div class="stat_label">')
+        stats.append(i[0].split('>')[-1] + ' ' + i[1].split('<')[0])
+    print(name)
+    print(stats)
+    for i in range(len(games)):
+        data.append([games[i], imgs[i], links[i]])
+    print(data)
+    stat = ''
+    for i in range(len(stats)):
+        if i == 0:
+            stat += stats[0]
+        elif i == 1:
+            stat += f'\nPosts: {stats[1]}'
+        elif i == 2:
+            stat += f'\nTopics: {stats[2]}'
+        elif i == 3:
+            stat += f'\nFollowers: {stats[3]}'
+        elif i == 4:
+            stat += f'\nPeople is followed: {stats[4]}'
+    stat += f'\nGames: {len(games)} games'
+    shgm = 'components=['
+    for i in data:
+        s = i
+        shgm += f"embed=discord.Embed(title='{s[0]}', description='{s[2]}'), "
+    shgm += ']'
+    print(shgm)
+    if games:
+        await ctx.send(
+            embed=discord.Embed(title=name, description=stat).set_image(
+                url=ava),
+            components=[ActionRow(
+                Button(style=ButtonStyle.URL, label='Profile', url=f'https://itch.io/profile/{profilename}',
+                       custom_id='lin'),
+                Button(style=ButtonStyle.URL, label='Creator page', url=f'https://{profilename}.itch.io',
+                       custom_id='lin'),
+                Button(style=ButtonStyle.green, label='Show games', custom_id='nex'))])
+        response = await bot.wait_for("button_click")
+        msg = await response.send(embed=discord.Embed(title=data[0][0], description=data[0][2]).set_image(
+                url=data[0][1]),
+                components=[ActionRow(Button(style=ButtonStyle.blue, label='Previous', custom_id='prev'),
+                                      Button(style=ButtonStyle.URL, label='Link',
+                                             url=f'{data[0][2]}', custom_id='lin'),
+                                      Button(style=ButtonStyle.green, label='Next', custom_id='nex'))
+                            ])
+        print(msg.id)
+        while True:
+            response = await bot.wait_for("button_click")
+            if response.channel == ctx.channel:
+                if response.component.label == 'Next':
+                    jam += 1
+                    if jam == len(data):
+                        jam = 0
+                if response.component.label == 'Previous':
+                    jam -= 1
+                    if jam == -1:
+                        jam = len(data) - 1
+            data1 = data[jam]
+            print(data1[1])
+            await msg.edit(embed=discord.Embed(title=data1[0], description=data1[2]).set_image(
+                url=data1[1]),
+                components=[ActionRow(Button(style=ButtonStyle.blue, label='Previous', custom_id='prev'),
+                                      Button(style=ButtonStyle.URL, label='Link',
+                                             url=f'https://itch.io{data1[1]}', custom_id='lin'),
+                                      Button(style=ButtonStyle.green, label='Next', custom_id='nex'))
+                            ])
+            try:
+                await response.respond()
+            except:
+                pass
+    else:
+        await ctx.send(
+            embed=discord.Embed(title=name, description=stat).set_image(
+                url=ava),
+            components=[ActionRow(
+                Button(style=ButtonStyle.URL, label='Profile', url=f'https://itch.io/profile/{profilename}',
+                       custom_id='lin'),
+                Button(style=ButtonStyle.URL, label='Creator page', url=f'https://{profilename}.itch.io',
+                       custom_id='lin'))])
 
 
 @bot.command()
@@ -407,4 +511,4 @@ responce = requests.get(link).text
 soup = BeautifulSoup(responce, 'html.parser')
 #  print(soup.prettify())
 # ---------------------------------main-------------------------------------------
-bot.run('')
+bot.run('OTY0MTA3MzY4NDc0NTA5MzUy.Ylf09A.kzbk9J2kSQRD9KQfarww0XNSLF8')
