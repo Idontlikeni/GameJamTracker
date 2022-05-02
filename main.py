@@ -357,11 +357,11 @@ async def future_jams(ctx):
                                              colour=blue_color).set_image(
                              url=data1[5]),
                          components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='fprev'),
-                                               Button(style=ButtonStyle.URL, label='Link',
+                                               Button(style=ButtonStyle.green, label='Next🡲', custom_id='fnex')),
+                                     ActionRow(Button(style=ButtonStyle.URL, label='Link',
                                                       url=f'https://itch.io{data1[4]}',
                                                       custom_id='lin'),
-                                               Button(style=ButtonStyle.red, label='Set timer', custom_id='ftim'),
-                                               Button(style=ButtonStyle.green, label='Next🡲', custom_id='fnex'))
+                                               Button(style=ButtonStyle.red, label='Set timer', custom_id='ftim'))
                                      ]
                          )
     while True:
@@ -398,10 +398,11 @@ async def future_jams(ctx):
                                                            colour=blue_color).set_image(
             url=data1[5]),
                        components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='fprev'),
-                                             Button(style=ButtonStyle.URL, label='Link',
-                                                    url=f'https://itch.io{data1[4]}', custom_id='lin'),
-                                             Button(style=ButtonStyle.red, label='Set timer', custom_id='ftim'),
-                                             Button(style=ButtonStyle.green, label='Next🡲', custom_id='fnex'))
+                                             Button(style=ButtonStyle.green, label='Next🡲', custom_id='fnex')),
+                                   ActionRow(Button(style=ButtonStyle.URL, label='Link',
+                                                    url=f'https://itch.io{data1[4]}',
+                                                    custom_id='lin'),
+                                             Button(style=ButtonStyle.red, label='Set timer', custom_id='ftim'))
                                    ])
         try:
             await response.respond()
@@ -677,6 +678,4 @@ responce = requests.get(link).text
 soup = BeautifulSoup(responce, 'html.parser')
 #  print(soup.prettify())
 # ---------------------------------main-------------------------------------------
-# OTU1MDU5NjQ5NTIxMDA0Njc0.YjcKnA.WGrjYhpYAOnzKpuZTeC1qswjRjY
-# OTY0MTA3MzY4NDc0NTA5MzUy.Ylf09A.5CrS8wcfN_J9VjJSogJKNsDeuQY
-bot.run('OTU1MDU5NjQ5NTIxMDA0Njc0.YjcKnA.WGrjYhpYAOnzKpuZTeC1qswjRjY')
+bot.run('')
