@@ -384,13 +384,13 @@ async def future_jams(ctx):
                                         colour=purple_color).set_image(url=data1[5]),
                     components=[ActionRow(Button(style=ButtonStyle.URL, label='Link', url=f'https://itch.io{data1[4]}',
                                                  custom_id='lin'))])
-                # await asyncio.gather(asyncio.create_task(
-                #     timer_to_future(data1[0], ctx, data1[2], msg,
-                #                     data1[5], data1[4], auth)))
-                print(2, response)
                 await asyncio.gather(asyncio.create_task(
-                    timer_to_future(data1[0], ctx, data1[2] - dt.timedelta(days=11, hours=7, minutes=15), msg,
+                    timer_to_future(data1[0], ctx, data1[2], msg,
                                     data1[5], data1[4], auth)))
+                # print(2, response)
+                # await asyncio.gather(asyncio.create_task(
+                #     timer_to_future(data1[0], ctx, data1[2] - dt.timedelta(days=11, hours=7, minutes=15), msg,
+                #                     data1[5], data1[4], auth)))
                 return
         data1 = data[jam]
         await msg.edit('Future jams:', embed=discord.Embed(title=data1[0],
