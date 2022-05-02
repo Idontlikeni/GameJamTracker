@@ -1,4 +1,4 @@
-from turtle import title
+# from turtle import title
 import discord
 from discord.ext import commands
 from discord.utils import get
@@ -24,8 +24,10 @@ logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
-
+response_id = 0
+response_id_timer = 0
 data = []
+fdata = []
 role_message_id = 942058070215905341  # ID of the message that can be reacted to to add/remove a role.
 emoji_to_role = {
     discord.PartialEmoji(name='1️⃣'): 942069045543456798,
@@ -126,6 +128,22 @@ async def timer(name, date, context, delta):
         await asyncio.sleep(delta)
 
 
+async def timer_to_future(name, ctx, jam_time, response, img, link):
+    # await ctx.send(f'Таймер успешно установлен.')
+    while True:
+        if jam_time < dt.datetime.now():
+            # await ctx.send(f'{ctx.author.mention}, Джем {name} начался.')
+            # await response.respond(content=f'{ctx.author.mention}, Джем {name} начался.')
+            await response.reply(f'{ctx.author.mention}',
+                                 embed=discord.Embed(title='⚠Уведомление⚠',
+                                                     description=f'Джем {name} начался.').set_image(url=img),
+                                 components=[
+                                     ActionRow(Button(style=ButtonStyle.URL, label='Link', url=f'https://itch.io{link}',
+                                                      custom_id='lin'))])
+            break
+        await asyncio.sleep(300)
+
+
 async def update_data():
     global data
     names = []
@@ -167,6 +185,57 @@ async def update_data():
     data = []
     for i in range(len(names)):
         data.append((names[i], dates[i], links[i], images[i], int(''.join(joined[i].split(',')))))
+
+
+async def update_fdata():
+    global fdata
+    names = []
+    dates = []
+    dates1 = []
+    deltime = []
+    links = []
+    images = []
+    joined = []
+    url = 'https://itch.io/jams'
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'lxml')
+    quotes = soup.find_all('div', class_="conversion_link_widget")
+    dat = soup.find_all('span', class_="date_countdown")
+    imag = soup.find_all('div', class_='jam_cover')
+    lin = soup.find_all(['div'], class_="conversion_link_widget")
+    jo = soup.find_all(['div'], class_="stat")
+    for i in imag:
+        images.append(str(i).split('data-background_image="')[1].split('"')[0])
+    for i in quotes:
+        if i.text != '':
+            names.append(i.text)
+    for i in dat:
+        if 'title' in str(i):
+            ong = ''
+        else:
+            ong = 'Ongoing, ends: '
+        time = i.text[:-1].split('T')
+        datet = list(map(int, time[0].split('-')))
+        my_date = dt.date(datet[0], datet[1], datet[-1])
+        datet = list(map(int, time[1].split(':')))
+        my_time = dt.time(datet[0], datet[1], datet[-1])
+        my_datetime = dt.datetime.combine(my_date, my_time)
+        delta_time1 = dt.timedelta(hours=3)
+        dates.append(ong + str(my_datetime + delta_time1))
+        dates1.append(my_datetime + delta_time1)
+        deltime.append(my_datetime + delta_time1 - dt.datetime.now())
+    for i in lin:
+        links.append(str(i).split('a href="')[1].split('"')[0])
+    links = links[::2]
+    for i in jo:
+        joined.append(i.text.split()[0])
+    fdata = []
+    for i in range(len(names)):
+        fdata.append(
+            (names[i], dates[i], dates1[i], deltime[i], links[i], images[i], int(''.join(joined[i].split(',')))))
+    fdata = list(filter(lambda x: 'Ongoing, ends:' not in x[1], fdata))
+    fdata = sorted(fdata, key=lambda x: x[2])
+    print(fdata)
 
 
 @bot.event
@@ -222,40 +291,42 @@ async def gst(ctx):
     await update_data()
     #  print(data)
     data1 = data[jam]
-    msg = await ctx.send(
-        embed=discord.Embed(title=data1[0], description=f'Date: {data1[1]} \n Joined: {data1[-1]}').set_image(
-            url=data1[3]),
-        components=[ActionRow(Button(style=ButtonStyle.blue, label='Previous', custom_id='prev'),
-                              Button(style=ButtonStyle.URL, label='url', url=f'https://itch.io{data1[2]}',
-                                     custom_id='lin'),
-                              Button(style=ButtonStyle.green, label='Next', custom_id='nex'))
-                    ]
-    )
+    msg = await ctx.send('All jams:',
+                         embed=discord.Embed(title=data1[0],
+                                             description=f'Date: {data1[1]} \n Joined: {data1[-1]}').set_image(
+                             url=data1[3]),
+                         components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
+                                               Button(style=ButtonStyle.URL, label='Link',
+                                                      url=f'https://itch.io{data1[2]}',
+                                                      custom_id='lin'),
+                                               Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex'))
+                                     ]
+                         )
     while True:
         response = await bot.wait_for("button_click")
         if response.channel == ctx.channel:
-            if response.component.label == 'Next':
+            if response.component.custom_id == 'nex':
                 jam += 1
                 if jam == len(data):
                     jam = 0
-            if response.component.label == 'Previous':
+            if response.component.custom_id == 'prev':
                 jam -= 1
                 if jam == -1:
                     jam = len(data) - 1
         data1 = data[jam]
-        await msg.edit(embed=discord.Embed(title=data1[0],
-                                           description=f'Date: {data1[1]} \n Joined: {data1[-1]}').set_image(
+        await msg.edit('All jams:', embed=discord.Embed(title=data1[0],
+                                                        description=f'Date: {data1[1]} \n Joined: {data1[-1]}').set_image(
             url=data1[3]),
-            components=[ActionRow(Button(style=ButtonStyle.blue, label='Previous', custom_id='prev'),
-                                  Button(style=ButtonStyle.URL, label='url',
-                                         url=f'https://itch.io{data1[2]}', custom_id='lin'),
-                                  Button(style=ButtonStyle.green, label='Next', custom_id='nex'))
-                        ])
+                       components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
+                                             Button(style=ButtonStyle.URL, label='Link',
+                                                    url=f'https://itch.io{data1[2]}', custom_id='lin'),
+                                             Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex'))
+                                   ])
         try:
             await response.respond()
-            print('b')
+            # print('b')
         except:
-            print('c')
+            # print('c')
             pass
 
     # global link
@@ -268,8 +339,73 @@ async def gst(ctx):
 
 
 @bot.command()
+async def future_jams(ctx):
+    global fdata
+    await update_fdata()
+    jam = 0
+    data = fdata
+    #  print(data)
+    data1 = data[jam]
+    msg = await ctx.send('Future jams:',
+                         embed=discord.Embed(title=data1[0],
+                                             description=f'Date: {data1[1]} \nTime to: {data1[3].days} days {data1[3].seconds // 3600} hours \nJoined: {data1[-1]}').set_image(
+                             url=data1[5]),
+                         components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='fprev'),
+                                               Button(style=ButtonStyle.URL, label='Link',
+                                                      url=f'https://itch.io{data1[4]}',
+                                                      custom_id='lin'),
+                                               Button(style=ButtonStyle.red, label='Set timer', custom_id='ftim'),
+                                               Button(style=ButtonStyle.green, label='Next🡲', custom_id='fnex'))
+                                     ]
+                         )
+    while True:
+        response = await bot.wait_for("button_click")
+        if response.channel == ctx.channel:
+            if response.component.custom_id == 'fnex':
+                jam += 1
+                if jam == len(data):
+                    jam = 0
+            if response.component.custom_id == 'fprev':
+                jam -= 1
+                if jam == -1:
+                    jam = len(data) - 1
+            if response.component.custom_id == 'ftim':
+                response = await response.respond(
+                    embed=discord.Embed(title='⚠Уведомление⚠',
+                                        description=f'Таймер на {data1[0]} успешно установлен').set_image(url=data1[5]),
+                    components=[ActionRow(Button(style=ButtonStyle.URL, label='Link', url=f'https://itch.io{data1[4]}',
+                                                 custom_id='lin'))])
+                await asyncio.gather(asyncio.create_task(
+                    timer_to_future(data1[0], ctx, data1[2], msg,
+                                    data1[5], data1[4])))
+                # await asyncio.gather(asyncio.create_task(
+                #     timer_to_future(data1[0], ctx, data1[2] - dt.timedelta(days=11, hours=7, minutes=15), msg,
+                #                     data1[5], data1[4])))
+                return
+        data1 = data[jam]
+        await msg.edit('Future jams:', embed=discord.Embed(title=data1[0],
+                                                           description=f'Date: {data1[1]} \nTime to: {data1[3].days} days {data1[3].seconds // 3600} hours \nJoined: {data1[-1]}').set_image(
+            url=data1[5]),
+                       components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='fprev'),
+                                             Button(style=ButtonStyle.URL, label='Link',
+                                                    url=f'https://itch.io{data1[4]}', custom_id='lin'),
+                                             Button(style=ButtonStyle.red, label='Set timer', custom_id='ftim'),
+                                             Button(style=ButtonStyle.green, label='Next🡲', custom_id='fnex'))
+                                   ])
+        try:
+            await response.respond()
+            # print('b')
+        except:
+            # print('c')
+            pass
+
+
+@bot.command()
 async def ust(ctx, *profilename: str):
     # await ctx.send(parser(f'https://itch.io/profile/{profilename}'))
+    global response_id
+    response_id += 1
+    id = response_id
     profilename = '-'.join(profilename).lower()
     jam = 0
     data = []
@@ -286,7 +422,9 @@ async def ust(ctx, *profilename: str):
     gms = soup.find_all('a', class_="title game_link")
     statiscs = soup.find_all('div', class_="stat_box")
     ava = str(soup.find_all('div', class_="avatar")[0]).split("url('")[1].split("')")[0]
-    print(ava)
+    if '/static/images/' in ava:
+        ava = 'https://itch.io/' + ava
+    print('ava', ava)
     rg = soup.find_all('abbr')
     stats.append(f'Registration date {rg[0].text}')
     for i in gms:
@@ -324,58 +462,75 @@ async def ust(ctx, *profilename: str):
         shgm += f"embed=discord.Embed(title='{s[0]}', description='{s[2]}'), "
     shgm += ']'
     print(shgm)
-    if games:
-        await ctx.send(
-            embed=discord.Embed(title=name, description=stat).set_image(
-                url=ava),
-            components=[ActionRow(
-                Button(style=ButtonStyle.URL, label='Profile', url=f'https://itch.io/profile/{profilename}',
-                       custom_id='lin'),
-                Button(style=ButtonStyle.URL, label='Creator page', url=f'https://{profilename}.itch.io',
-                       custom_id='lin'),
-                Button(style=ButtonStyle.green, label='Show games', custom_id='nex'))])
-        response = await bot.wait_for("button_click")
-        msg = await response.send(embed=discord.Embed(title=data[0][0], description=data[0][2]).set_image(
-                url=data[0][1]),
-                components=[ActionRow(Button(style=ButtonStyle.blue, label='Previous', custom_id='prev'),
-                                      Button(style=ButtonStyle.URL, label='Link',
-                                             url=f'{data[0][2]}', custom_id='lin'),
-                                      Button(style=ButtonStyle.green, label='Next', custom_id='nex'))
-                            ])
-        print(msg.id)
-        while True:
+    if response_id == id:
+        if games:
+            await ctx.send(
+                embed=discord.Embed(title=name, description=stat).set_image(
+                    url=ava),
+                components=[ActionRow(
+                    Button(style=ButtonStyle.URL, label='Profile', url=f'https://itch.io/profile/{profilename}',
+                           custom_id='lin'),
+                    Button(style=ButtonStyle.URL, label='Creator page', url=f'https://{profilename}.itch.io',
+                           custom_id='lin'),
+                    Button(style=ButtonStyle.green, label='Show games', custom_id='nex'))])
             response = await bot.wait_for("button_click")
-            if response.channel == ctx.channel:
-                if response.component.label == 'Next':
-                    jam += 1
-                    if jam == len(data):
-                        jam = 0
-                if response.component.label == 'Previous':
-                    jam -= 1
-                    if jam == -1:
-                        jam = len(data) - 1
-            data1 = data[jam]
-            print(data1[1])
-            await msg.edit(embed=discord.Embed(title=data1[0], description=data1[2]).set_image(
-                url=data1[1]),
-                components=[ActionRow(Button(style=ButtonStyle.blue, label='Previous', custom_id='prev'),
-                                      Button(style=ButtonStyle.URL, label='Link',
-                                             url=f'https://itch.io{data1[1]}', custom_id='lin'),
-                                      Button(style=ButtonStyle.green, label='Next', custom_id='nex'))
-                            ])
-            try:
-                await response.respond()
-            except:
-                pass
-    else:
-        await ctx.send(
-            embed=discord.Embed(title=name, description=stat).set_image(
-                url=ava),
-            components=[ActionRow(
-                Button(style=ButtonStyle.URL, label='Profile', url=f'https://itch.io/profile/{profilename}',
-                       custom_id='lin'),
-                Button(style=ButtonStyle.URL, label='Creator page', url=f'https://{profilename}.itch.io',
-                       custom_id='lin'))])
+            print(response)
+            if response_id == id:
+                msg = await ctx.send(embed=discord.Embed(title=data[0][0]).set_image(
+                    url=data[0][1]),
+                    components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
+                                          Button(style=ButtonStyle.URL, label='Link',
+                                                 url=data[0][2], custom_id='lin'),
+                                          Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex'))
+                                ])
+                try:
+                    await response.respond()
+                except:
+                    pass
+                print(msg.id)
+                while True:
+                    print(id, response_id)
+                    if response_id > id:
+                        break
+                    response = await bot.wait_for("button_click")
+                    if response.channel == ctx.channel:
+                        if response.component.label == 'Next🡲':
+                            jam += 1
+                            if jam == len(data):
+                                jam = 0
+                        if response.component.label == '🡰Previous':
+                            jam -= 1
+                            if jam == -1:
+                                jam = len(data) - 1
+                    data1 = data[jam]
+                    print(data1, jam)
+                    print(data1[1])
+                    print(data[1][1])
+                    print(data[0][1])
+                    await msg.edit(embed=discord.Embed(title=data1[0]).set_image(
+                        url=data1[1]),
+                        components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
+                                              Button(style=ButtonStyle.URL, label='Link',
+                                                     url=data1[2], custom_id='lin'),
+                                              Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex'))
+                                    ])
+                    try:
+                        await response.respond()
+                    except:
+                        pass
+                    print()
+            else:
+                return
+        else:
+            await ctx.send(
+                embed=discord.Embed(title=name, description=stat).set_image(
+                    url=ava),
+                components=[ActionRow(
+                    Button(style=ButtonStyle.URL, label='Profile', url=f'https://itch.io/profile/{profilename}',
+                           custom_id='lin'),
+                    Button(style=ButtonStyle.URL, label='Creator page', url=f'https://{profilename}.itch.io',
+                           custom_id='lin'))])
+            return
 
 
 @bot.command()
@@ -511,4 +666,4 @@ responce = requests.get(link).text
 soup = BeautifulSoup(responce, 'html.parser')
 #  print(soup.prettify())
 # ---------------------------------main-------------------------------------------
-bot.run('OTY0MTA3MzY4NDc0NTA5MzUy.Ylf09A.kzbk9J2kSQRD9KQfarww0XNSLF8')
+bot.run('')
