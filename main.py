@@ -18,6 +18,8 @@ list_len = 5
 intents = discord.Intents.all()
 intents.members = True
 bot = ComponentsBot(command_prefix='.', description=description, intents=intents)
+blue_color = 0x87CEEB
+purple_color = 0xf954f6
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.INFO)
@@ -128,15 +130,16 @@ async def timer(name, date, context, delta):
         await asyncio.sleep(delta)
 
 
-async def timer_to_future(name, ctx, jam_time, response, img, link):
+async def timer_to_future(name, ctx, jam_time, response, img, link, author):
     # await ctx.send(f'Таймер успешно установлен.')
     while True:
         if jam_time < dt.datetime.now():
             # await ctx.send(f'{ctx.author.mention}, Джем {name} начался.')
             # await response.respond(content=f'{ctx.author.mention}, Джем {name} начался.')
-            await response.reply(f'{ctx.author.mention}',
+            await response.reply(f'{author.mention}',
                                  embed=discord.Embed(title='⚠Уведомление⚠',
-                                                     description=f'Джем {name} начался.').set_image(url=img),
+                                                     description=f'Джем {name} начался.',
+                                                     colour=purple_color).set_image(url=img),
                                  components=[
                                      ActionRow(Button(style=ButtonStyle.URL, label='Link', url=f'https://itch.io{link}',
                                                       custom_id='lin'))])
@@ -293,7 +296,8 @@ async def gst(ctx):
     data1 = data[jam]
     msg = await ctx.send('All jams:',
                          embed=discord.Embed(title=data1[0],
-                                             description=f'Date: {data1[1]} \n Joined: {data1[-1]}').set_image(
+                                             description=f'Date: {data1[1]} \n Joined: {data1[-1]}',
+                                             colour=blue_color).set_image(
                              url=data1[3]),
                          components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
                                                Button(style=ButtonStyle.URL, label='Link',
@@ -315,7 +319,8 @@ async def gst(ctx):
                     jam = len(data) - 1
         data1 = data[jam]
         await msg.edit('All jams:', embed=discord.Embed(title=data1[0],
-                                                        description=f'Date: {data1[1]} \n Joined: {data1[-1]}').set_image(
+                                                        description=f'Date: {data1[1]} \n Joined: {data1[-1]}',
+                                                        colour=blue_color).set_image(
             url=data1[3]),
                        components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
                                              Button(style=ButtonStyle.URL, label='Link',
@@ -348,7 +353,8 @@ async def future_jams(ctx):
     data1 = data[jam]
     msg = await ctx.send('Future jams:',
                          embed=discord.Embed(title=data1[0],
-                                             description=f'Date: {data1[1]} \nTime to: {data1[3].days} days {data1[3].seconds // 3600} hours \nJoined: {data1[-1]}').set_image(
+                                             description=f'Date: {data1[1]} \nTime to: {data1[3].days} days {data1[3].seconds // 3600} hours \nJoined: {data1[-1]}',
+                                             colour=blue_color).set_image(
                              url=data1[5]),
                          components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='fprev'),
                                                Button(style=ButtonStyle.URL, label='Link',
@@ -360,6 +366,8 @@ async def future_jams(ctx):
                          )
     while True:
         response = await bot.wait_for("button_click")
+        print(1, response)
+        auth = response.author
         if response.channel == ctx.channel:
             if response.component.custom_id == 'fnex':
                 jam += 1
@@ -370,21 +378,24 @@ async def future_jams(ctx):
                 if jam == -1:
                     jam = len(data) - 1
             if response.component.custom_id == 'ftim':
-                response = await response.respond(
+                await response.respond(
                     embed=discord.Embed(title='⚠Уведомление⚠',
-                                        description=f'Таймер на {data1[0]} успешно установлен').set_image(url=data1[5]),
+                                        description=f"Таймер на '{data1[0]}' успешно установлен",
+                                        colour=purple_color).set_image(url=data1[5]),
                     components=[ActionRow(Button(style=ButtonStyle.URL, label='Link', url=f'https://itch.io{data1[4]}',
                                                  custom_id='lin'))])
-                await asyncio.gather(asyncio.create_task(
-                    timer_to_future(data1[0], ctx, data1[2], msg,
-                                    data1[5], data1[4])))
                 # await asyncio.gather(asyncio.create_task(
-                #     timer_to_future(data1[0], ctx, data1[2] - dt.timedelta(days=11, hours=7, minutes=15), msg,
-                #                     data1[5], data1[4])))
+                #     timer_to_future(data1[0], ctx, data1[2], msg,
+                #                     data1[5], data1[4], auth)))
+                print(2, response)
+                await asyncio.gather(asyncio.create_task(
+                    timer_to_future(data1[0], ctx, data1[2] - dt.timedelta(days=11, hours=7, minutes=15), msg,
+                                    data1[5], data1[4], auth)))
                 return
         data1 = data[jam]
         await msg.edit('Future jams:', embed=discord.Embed(title=data1[0],
-                                                           description=f'Date: {data1[1]} \nTime to: {data1[3].days} days {data1[3].seconds // 3600} hours \nJoined: {data1[-1]}').set_image(
+                                                           description=f'Date: {data1[1]} \nTime to: {data1[3].days} days {data1[3].seconds // 3600} hours \nJoined: {data1[-1]}',
+                                                           colour=blue_color).set_image(
             url=data1[5]),
                        components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='fprev'),
                                              Button(style=ButtonStyle.URL, label='Link',
@@ -465,7 +476,7 @@ async def ust(ctx, *profilename: str):
     if response_id == id:
         if games:
             await ctx.send(
-                embed=discord.Embed(title=name, description=stat).set_image(
+                embed=discord.Embed(title=name, description=stat, colour=purple_color).set_image(
                     url=ava),
                 components=[ActionRow(
                     Button(style=ButtonStyle.URL, label='Profile', url=f'https://itch.io/profile/{profilename}',
@@ -476,7 +487,7 @@ async def ust(ctx, *profilename: str):
             response = await bot.wait_for("button_click")
             print(response)
             if response_id == id:
-                msg = await ctx.send(embed=discord.Embed(title=data[0][0]).set_image(
+                msg = await ctx.send(embed=discord.Embed(title=data[0][0], colour=blue_color).set_image(
                     url=data[0][1]),
                     components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
                                           Button(style=ButtonStyle.URL, label='Link',
@@ -507,7 +518,7 @@ async def ust(ctx, *profilename: str):
                     print(data1[1])
                     print(data[1][1])
                     print(data[0][1])
-                    await msg.edit(embed=discord.Embed(title=data1[0]).set_image(
+                    await msg.edit(embed=discord.Embed(title=data1[0], colour=blue_color).set_image(
                         url=data1[1]),
                         components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
                                               Button(style=ButtonStyle.URL, label='Link',
@@ -523,7 +534,7 @@ async def ust(ctx, *profilename: str):
                 return
         else:
             await ctx.send(
-                embed=discord.Embed(title=name, description=stat).set_image(
+                embed=discord.Embed(title=name, description=stat, colour=purple_color).set_image(
                     url=ava),
                 components=[ActionRow(
                     Button(style=ButtonStyle.URL, label='Profile', url=f'https://itch.io/profile/{profilename}',
@@ -666,4 +677,6 @@ responce = requests.get(link).text
 soup = BeautifulSoup(responce, 'html.parser')
 #  print(soup.prettify())
 # ---------------------------------main-------------------------------------------
-bot.run('')
+# OTU1MDU5NjQ5NTIxMDA0Njc0.YjcKnA.WGrjYhpYAOnzKpuZTeC1qswjRjY
+# OTY0MTA3MzY4NDc0NTA5MzUy.Ylf09A.5CrS8wcfN_J9VjJSogJKNsDeuQY
+bot.run('OTU1MDU5NjQ5NTIxMDA0Njc0.YjcKnA.WGrjYhpYAOnzKpuZTeC1qswjRjY')
