@@ -9,6 +9,7 @@ import datetime as dt
 import asyncio
 from discord_components import DiscordComponents, Button, ButtonStyle, ActionRow, ComponentsBot
 import logging
+import sqlite3
 
 link = 'https://itch.io/jams/upcoming/featured'
 description = '''An example bot to showcase the discord.ext.commands extension
@@ -30,6 +31,7 @@ response_id = 0
 response_id_timer = 0
 data = []
 fdata = []
+dashes = ['\u2680', '\u2681', '\u2682', '\u2683', '\u2684', '\u2685']
 role_message_id = 942058070215905341  # ID of the message that can be reacted to to add/remove a role.
 emoji_to_role = {
     discord.PartialEmoji(name='1️⃣'): 942069045543456798,
@@ -288,6 +290,261 @@ async def joined(ctx, member: discord.Member):
 
 
 @bot.command()
+async def lust(ctx, *name):
+    name = ' '.join(name)
+    con = sqlite3.connect('statistic/statistics.db')
+    cur = con.cursor()
+    score = cur.execute(f"""SELECT score FROM stats WHERE user == '{name}'""").fetchall()
+    total = cur.execute(f"""SELECT total_games FROM stats WHERE
+                         user == '{name}'""").fetchall()
+    win = cur.execute(f"""SELECT win_games FROM stats WHERE
+                         user == '{name}'""").fetchall()
+    chat = cur.execute(f"""SELECT chat_help FROM stats WHERE
+                         user == '{name}'""").fetchall()
+    timers = cur.execute(f"""SELECT timers_added FROM stats WHERE
+                         user == '{name}'""").fetchall()
+    con.commit()
+    con.close()
+    await ctx.reply('💥Статистика💥',
+                    embed=discord.Embed(title=f'Статистика пользователя: {name}:',
+                                        description=f'Всего очков: {score[0][0]}\nИгр сыграно: {total[0][0]}\n'
+                                                    f'Игр выигрыно: {win[0][0]}\n'
+                                                    f'Помощей в чате: {chat[0][0]}\nДобавлено таймеров: {timers[0][0]}',
+                                        colour=purple_color))
+
+
+@bot.command()
+async def games(ctx):
+    msg = await ctx.send('Вбор мини-игры:',
+                         embed=discord.Embed(title='Все мини-игры:',
+                                             description=f'1️⃣Случайное число.\n\nПростой рандомайзер чисел от 1 до'
+                                                         f' 100.\n\n--------------------\n\n2️⃣Кости.\n\nБот подбросит'
+                                                         f' специально для вас 2 игральные кости. Сколько на них'
+                                                         f' выпадет?\n\n-------------------\n\n3️⃣Угадай число.\n\nБот'
+                                                         f' загадает число от 1 до 10. Ваша задача - угадать его.'
+                                                         f' Сможете ли вы? Ваши шансы на успех равны 10%.',
+                                             colour=purple_color),
+                         components=[
+                             ActionRow(Button(style=ButtonStyle.grey, label='1️⃣Случайное число', custom_id='g1'),
+                                       Button(style=ButtonStyle.grey, label='2️⃣Кости', custom_id='g2'),
+                                       Button(style=ButtonStyle.grey, label='3️⃣Угадай число', custom_id='g3'))
+                         ],
+                         )
+    response = await bot.wait_for("button_click")
+    if response.channel == ctx.channel:
+        if response.component.custom_id == 'g1':
+            await response.respond(embed=discord.Embed(title="🎮Мини-игра Случайное число🎰",
+                                                       description=f'Простой рандомайзер чисел от 1 до 100.'
+                                                                   f'\n\nВы хотите начать игру?',
+                                                       colour=blue_color),
+                                   components=[
+                                       ActionRow(Button(style=ButtonStyle.grey, label='Да✅', custom_id='yes1'),
+                                                 Button(style=ButtonStyle.grey, label='Нет❌', custom_id='no1'))
+                                   ],
+                                   )
+            response = await bot.wait_for("button_click")
+            if response.channel == ctx.channel:
+                if response.component.custom_id == 'yes1':
+                    await response.respond(embed=discord.Embed(title="🎮Мини-игра Случайное число🎰",
+                                                               description=f'Бот загадал число'
+                                                                           f' ✨ {random.randint(1, 100)} ✨',
+                                                               colour=purple_color)
+                                           )
+                    con = sqlite3.connect('statistic/statistics.db')
+                    cur = con.cursor()
+                    score = cur.execute(f"""SELECT score FROM stats WHERE user == '{response.author}'""").fetchall()
+                    rnd_games = cur.execute(f"""SELECT rnd FROM stats WHERE
+                     user == '{response.author}'""").fetchall()
+                    con.commit()
+                    con.close()
+                    # print(score)
+                    if not score:
+                        con = sqlite3.connect('statistic/statistics.db')
+                        cur = con.cursor()
+                        score = cur.execute(f"""INSERT INTO stats(user, score, rnd, total_games, win_games, cube, 
+                        chat_help, timers_added) VALUES('{response.author}', 1, 1, 0, 0, 0, 0, 0)""").fetchall()
+                        con.commit()
+                        con.close()
+                    else:
+                        con = sqlite3.connect('statistic/statistics.db')
+                        cur = con.cursor()
+                        score = cur.execute(f"""UPDATE stats SET score = {score[0][0] + 1}
+                        where user = '{response.author}'""").fetchall()
+                        score = cur.execute(f"""UPDATE stats SET rnd = {rnd_games[0][0] + 1}
+                                                where user = '{response.author}'""").fetchall()
+                        con.commit()
+                        con.close()
+                if response.component.custom_id == 'no1':
+                    await response.respond(embed=discord.Embed(title="🎮Мини-игра Случайное число🎰",
+                                                               description=f'❌Игра окончена.❌',
+                                                               colour=purple_color)
+                                           )
+        if response.component.custom_id == 'g2':
+            await response.respond(embed=discord.Embed(title="🎮Мини-игра Кости🎲",
+                                                       description=f'Бот подбросит'
+                                                                   f' специально для вас 2 игральные кости. Сколько'
+                                                                   f' на них выпадет?'
+                                                                   f'\n\nВы хотите начать игру?',
+                                                       colour=blue_color),
+                                   components=[
+                                       ActionRow(Button(style=ButtonStyle.grey, label='Да✅', custom_id='yes2'),
+                                                 Button(style=ButtonStyle.grey, label='Нет❌', custom_id='no2'))
+                                   ],
+                                   )
+            response = await bot.wait_for("button_click")
+            if response.channel == ctx.channel:
+                if response.component.custom_id == 'yes2':
+                    await response.respond(embed=discord.Embed(title="🎮Мини-игра Кости🎲",
+                                                               description=f'Бот подбрасывает кости'
+                                                                           f' ⚡ {random.choice(dashes)} ⚡'
+                                                                           f' {random.choice(dashes)} ⚡',
+                                                               colour=purple_color)
+                                           )
+                    con = sqlite3.connect('statistic/statistics.db')
+                    cur = con.cursor()
+                    score = cur.execute(f"""SELECT score FROM stats WHERE user == '{response.author}'""").fetchall()
+                    cube = cur.execute(f"""SELECT cube FROM stats WHERE
+                                         user == '{response.author}'""").fetchall()
+                    con.commit()
+                    con.close()
+                    # print(score)
+                    if not score:
+                        con = sqlite3.connect('statistic/statistics.db')
+                        cur = con.cursor()
+                        score = cur.execute(f"""INSERT INTO stats(user, score, rnd, total_games, win_games, cube, 
+                                            chat_help, timers_added) 
+                                            VALUES('{response.author}', 1, 0, 0, 0, 1, 0, 0)""").fetchall()
+                        con.commit()
+                        con.close()
+                    else:
+                        con = sqlite3.connect('statistic/statistics.db')
+                        cur = con.cursor()
+                        score = cur.execute(f"""UPDATE stats SET score = {score[0][0] + 1}
+                                            where user = '{response.author}'""").fetchall()
+                        score = cur.execute(f"""UPDATE stats SET cube = {cube[0][0] + 1}
+                                                                    where user = '{response.author}'""").fetchall()
+                        con.commit()
+                        con.close()
+                if response.component.custom_id == 'no2':
+                    await response.respond(embed=discord.Embed(title="🎮Мини-игра Кости🎲",
+                                                               description=f'❌Игра окончена.❌',
+                                                               colour=purple_color)
+                                           )
+        if response.component.custom_id == 'g3':
+            await response.respond(embed=discord.Embed(title="🎮Мини-игра Угадай число🔮",
+                                                       description=f'Бот'
+                                                                   f' загадает число от 1 до 10. Ваша задача'
+                                                                   f' - угадать его. Сможете ли вы? Ваши шансы'
+                                                                   f' на успех равны 10%.'
+                                                                   f'\n\nВы хотите начать игру?',
+                                                       colour=blue_color),
+                                   components=[
+                                       ActionRow(Button(style=ButtonStyle.grey, label='Да✅', custom_id='yes3'),
+                                                 Button(style=ButtonStyle.grey, label='Нет❌', custom_id='no3'))
+                                   ],
+                                   )
+            response = await bot.wait_for("button_click")
+            if response.channel == ctx.channel:
+                if response.component.custom_id == 'yes3':
+                    num = random.randint(1, 10)
+                    print('num', num)
+                    await response.respond(embed=discord.Embed(title="🎮Мини-игра Угадай число🔮",
+                                                               description=f'Бот загадал число. Пожалуйста,'
+                                                                           f' выберите число.',
+                                                               colour=purple_color),
+                                           components=[
+                                               ActionRow(Button(style=ButtonStyle.grey, label='1️⃣', custom_id='n1'),
+                                                         Button(style=ButtonStyle.grey, label='2️⃣', custom_id='n2'),
+                                                         Button(style=ButtonStyle.grey, label='3️⃣', custom_id='n3'),
+                                                         Button(style=ButtonStyle.grey, label='4️⃣', custom_id='n4'),
+                                                         Button(style=ButtonStyle.grey, label='5️⃣', custom_id='n5')),
+                                               ActionRow(Button(style=ButtonStyle.grey, label='6️⃣', custom_id='n6'),
+                                                         Button(style=ButtonStyle.grey, label='7️⃣', custom_id='n7'),
+                                                         Button(style=ButtonStyle.grey, label='8️⃣', custom_id='n8'),
+                                                         Button(style=ButtonStyle.grey, label='9️⃣', custom_id='n9'),
+                                                         Button(style=ButtonStyle.grey, label='🔟', custom_id='n10'))
+                                           ]
+                                           )
+                    response = await bot.wait_for("button_click")
+                    if response.channel == ctx.channel:
+                        if response.component.custom_id == 'n' + str(num):
+                            await response.respond(embed=discord.Embed(title="🎮Мини-игра Угадай число🔮",
+                                                                       description=f'🔥Всё верно!🔥 Бот загадал число'
+                                                                                   f' 💫 {num} 💫',
+                                                                       colour=blue_color)
+                                                   )
+                            con = sqlite3.connect('statistic/statistics.db')
+                            cur = con.cursor()
+                            score = cur.execute(
+                                f"""SELECT score FROM stats WHERE user == '{response.author}'""").fetchall()
+                            win = cur.execute(f"""SELECT win_games FROM stats WHERE
+                                                 user == '{response.author}'""").fetchall()
+                            total = cur.execute(f"""SELECT total_games FROM stats WHERE
+                                                                             user == '{response.author}'""").fetchall()
+                            con.commit()
+                            con.close()
+                            # print(score)
+                            if not score:
+                                con = sqlite3.connect('statistic/statistics.db')
+                                cur = con.cursor()
+                                score = cur.execute(f"""INSERT INTO stats(user, score, rnd, total_games, win_games,
+                                 cube, chat_help, timers_added) 
+                                 VALUES('{response.author}', 20, 0, 1, 1, 0, 0, 0)""").fetchall()
+                                con.commit()
+                                con.close()
+                            else:
+                                con = sqlite3.connect('statistic/statistics.db')
+                                cur = con.cursor()
+                                score = cur.execute(f"""UPDATE stats SET score = {score[0][0] + 20}
+                                                    where user = '{response.author}'""").fetchall()
+                                score = cur.execute(f"""UPDATE stats SET total_games = {total[0][0] + 1}
+                                                    where user = '{response.author}'""").fetchall()
+                                score = cur.execute(f"""UPDATE stats SET win_games = {win[0][0] + 1}
+                                                    where user = '{response.author}'""").fetchall()
+                                con.commit()
+                                con.close()
+                        else:
+                            await response.respond(embed=discord.Embed(title="🎮Мини-игра Угадай число🔮",
+                                                                       description=f'❌К сожалению вы не правы.❌ Бот '
+                                                                                   f'загадал число 💫 {num} 💫',
+                                                                       colour=blue_color)
+                                                   )
+                            con = sqlite3.connect('statistic/statistics.db')
+                            cur = con.cursor()
+                            score = cur.execute(
+                                f"""SELECT score FROM stats WHERE user == '{response.author}'""").fetchall()
+                            win = cur.execute(f"""SELECT win_games FROM stats WHERE
+                                                                             user == '{response.author}'""").fetchall()
+                            total = cur.execute(f"""SELECT total_games FROM stats WHERE
+                                                                            user == '{response.author}'""").fetchall()
+                            con.commit()
+                            con.close()
+                            # print(score)
+                            if not score:
+                                con = sqlite3.connect('statistic/statistics.db')
+                                cur = con.cursor()
+                                score = cur.execute(f"""INSERT INTO stats(user, score, rnd, total_games, win_games,
+                                                    cube, chat_help, timers_added) 
+                                                    VALUES('{response.author}', 1, 0, 1, 0, 0, 0, 0)""").fetchall()
+                                con.commit()
+                                con.close()
+                            else:
+                                con = sqlite3.connect('statistic/statistics.db')
+                                cur = con.cursor()
+                                score = cur.execute(f"""UPDATE stats SET score = {score[0][0] + 1}
+                                                                        where user = '{response.author}'""").fetchall()
+                                score = cur.execute(f"""UPDATE stats SET total_games = {total[0][0] + 1}
+                                                                        where user = '{response.author}'""").fetchall()
+                                con.commit()
+                                con.close()
+                if response.component.custom_id == 'no3':
+                    await response.respond(embed=discord.Embed(title="🎮Мини-игра Угадай число🔮",
+                                                               description=f'❌Игра окончена.❌',
+                                                               colour=purple_color)
+                                           )
+
+
+@bot.command()
 async def gst(ctx):
     global data
     jam = 0
@@ -353,7 +610,8 @@ async def future_jams(ctx):
     data1 = data[jam]
     msg = await ctx.send('Future jams:',
                          embed=discord.Embed(title=data1[0],
-                                             description=f'Date: {data1[1]} \nTime to: {data1[3].days} days {data1[3].seconds // 3600} hours \nJoined: {data1[-1]}',
+                                             description=f'Date: {data1[1]} \nTime to: {data1[3].days} days'
+                                                         f' {data1[3].seconds // 3600} hours \nJoined: {data1[-1]}',
                                              colour=blue_color).set_image(
                              url=data1[5]),
                          components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='fprev'),
@@ -384,6 +642,31 @@ async def future_jams(ctx):
                                         colour=purple_color).set_image(url=data1[5]),
                     components=[ActionRow(Button(style=ButtonStyle.URL, label='Link', url=f'https://itch.io{data1[4]}',
                                                  custom_id='lin'))])
+                con = sqlite3.connect('statistic/statistics.db')
+                cur = con.cursor()
+                score = cur.execute(f"""SELECT score FROM stats WHERE user == '{response.author}'""").fetchall()
+                timers = cur.execute(f"""SELECT timers_added FROM stats WHERE
+                                     user == '{response.author}'""").fetchall()
+                con.commit()
+                con.close()
+                # print(score)
+                if not score:
+                    con = sqlite3.connect('statistic/statistics.db')
+                    cur = con.cursor()
+                    score = cur.execute(f"""INSERT INTO stats(user, score, rnd, total_games, win_games, cube, 
+                                        chat_help, timers_added) 
+                                        VALUES('{response.author}', 1, 0, 0, 0, 0, 0, 1)""").fetchall()
+                    con.commit()
+                    con.close()
+                else:
+                    con = sqlite3.connect('statistic/statistics.db')
+                    cur = con.cursor()
+                    score = cur.execute(f"""UPDATE stats SET score = {score[0][0] + 1}
+                                        where user = '{response.author}'""").fetchall()
+                    score = cur.execute(f"""UPDATE stats SET timers_added = {timers[0][0] + 1}
+                                                                where user = '{response.author}'""").fetchall()
+                    con.commit()
+                    con.close()
                 await asyncio.gather(asyncio.create_task(
                     timer_to_future(data1[0], ctx, data1[2], msg,
                                     data1[5], data1[4], auth)))
@@ -394,7 +677,9 @@ async def future_jams(ctx):
                 return
         data1 = data[jam]
         await msg.edit('Future jams:', embed=discord.Embed(title=data1[0],
-                                                           description=f'Date: {data1[1]} \nTime to: {data1[3].days} days {data1[3].seconds // 3600} hours \nJoined: {data1[-1]}',
+                                                           description=f'Date: {data1[1]} \nTime to: {data1[3].days}'
+                                                                       f' days {data1[3].seconds // 3600} hours'
+                                                                       f' \nJoined: {data1[-1]}',
                                                            colour=blue_color).set_image(
             url=data1[5]),
                        components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='fprev'),
@@ -678,4 +963,4 @@ responce = requests.get(link).text
 soup = BeautifulSoup(responce, 'html.parser')
 #  print(soup.prettify())
 # ---------------------------------main-------------------------------------------
-bot.run('')
+bot.run('OTU1MDU5NjQ5NTIxMDA0Njc0.YjcKnA.39qUywNorpuLjNq9sJep5_7vG_4')
