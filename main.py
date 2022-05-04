@@ -847,7 +847,7 @@ async def start_timer(ctx):
 async def helpb(ctx):
     embed = discord.Embed(title="❔Help Command", description='''`.ust <profilename>` - check user profile
      from itch.io\n`.lust <profilename>` - check user profile
-     from local bot data\n`.gst` - show all gamejams\n`.fst` - show upcoming gamejams\n`.games` - show awalible
+     from local bot data\n`.gst` - show all gamejams\n`.fst` - show upcoming gamejams\n`.games` - show available
      mini-games''', colour=0x87CEEB)
     await ctx.send(embed=embed)
 
