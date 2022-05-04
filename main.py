@@ -140,7 +140,7 @@ async def timer_to_future(name, ctx, jam_time, response, img, link, author):
             # await response.respond(content=f'{ctx.author.mention}, Джем {name} начался.')
             await response.reply(f'{author.mention}',
                                  embed=discord.Embed(title='⚠Уведомление⚠',
-                                                     description=f'Джем {name} начался.',
+                                                     description=f'Джем `{name}` начался.',
                                                      colour=purple_color).set_image(url=img),
                                  components=[
                                      ActionRow(Button(style=ButtonStyle.URL, label='Link', url=f'https://itch.io{link}',
@@ -305,17 +305,24 @@ async def lust(ctx, *name):
                          user == '{name}'""").fetchall()
     con.commit()
     con.close()
-    await ctx.reply('💥Статистика💥',
-                    embed=discord.Embed(title=f'Статистика пользователя: {name}:',
-                                        description=f'Всего очков: {score[0][0]}\nИгр сыграно: {total[0][0]}\n'
-                                                    f'Игр выигрыно: {win[0][0]}\n'
-                                                    f'Помощей в чате: {chat[0][0]}\nДобавлено таймеров: {timers[0][0]}',
-                                        colour=purple_color))
+    if score:
+        await ctx.reply('💥Статистика💥',
+                        embed=discord.Embed(title=f'Статистика пользователя: `{name}`:',
+                                            description=f'Всего очков: {score[0][0]}\nИгр сыграно: {total[0][0]}\n'
+                                                        f'Игр выигрыно: {win[0][0]}\n'
+                                                        f'Помощей в чате: {chat[0][0]}\n'
+                                                        f'Добавлено таймеров: {timers[0][0]}',
+                                            colour=purple_color))
+    else:
+        await ctx.reply('💥Статистика💥',
+                        embed=discord.Embed(title=f'⚠Внимание⚠',
+                                            description=f'❌Пользаватель `{name}` не найден❌',
+                                            colour=purple_color))
 
 
 @bot.command()
 async def games(ctx):
-    msg = await ctx.send('Вбор мини-игры:',
+    msg = await ctx.send('Выбор мини-игры:',
                          embed=discord.Embed(title='Все мини-игры:',
                                              description=f'1️⃣Случайное число.\n\nПростой рандомайзер чисел от 1 до'
                                                          f' 100.\n\n--------------------\n\n2️⃣Кости.\n\nБот подбросит'
@@ -347,7 +354,7 @@ async def games(ctx):
                 if response.component.custom_id == 'yes1':
                     await response.respond(embed=discord.Embed(title="🎮Мини-игра Случайное число🎰",
                                                                description=f'Бот загадал число'
-                                                                           f' ✨ {random.randint(1, 100)} ✨',
+                                                                           f' ✨ `{random.randint(1, 100)}` ✨',
                                                                colour=purple_color)
                                            )
                     con = sqlite3.connect('statistic/statistics.db')
@@ -396,8 +403,8 @@ async def games(ctx):
                 if response.component.custom_id == 'yes2':
                     await response.respond(embed=discord.Embed(title="🎮Мини-игра Кости🎲",
                                                                description=f'Бот подбрасывает кости'
-                                                                           f' ⚡ {random.choice(dashes)} ⚡'
-                                                                           f' {random.choice(dashes)} ⚡',
+                                                                           f' ⚡ `{random.choice(dashes)}` ⚡'
+                                                                           f' `{random.choice(dashes)}` ⚡',
                                                                colour=purple_color)
                                            )
                     con = sqlite3.connect('statistic/statistics.db')
@@ -470,7 +477,7 @@ async def games(ctx):
                         if response.component.custom_id == 'n' + str(num):
                             await response.respond(embed=discord.Embed(title="🎮Мини-игра Угадай число🔮",
                                                                        description=f'🔥Всё верно!🔥 Бот загадал число'
-                                                                                   f' 💫 {num} 💫',
+                                                                                   f' 💫 `{num}` 💫',
                                                                        colour=blue_color)
                                                    )
                             con = sqlite3.connect('statistic/statistics.db')
@@ -506,7 +513,7 @@ async def games(ctx):
                         else:
                             await response.respond(embed=discord.Embed(title="🎮Мини-игра Угадай число🔮",
                                                                        description=f'❌К сожалению вы не правы.❌ Бот '
-                                                                                   f'загадал число 💫 {num} 💫',
+                                                                                   f'загадал число 💫 `{num}` 💫',
                                                                        colour=blue_color)
                                                    )
                             con = sqlite3.connect('statistic/statistics.db')
@@ -601,7 +608,7 @@ async def gst(ctx):
 
 
 @bot.command()
-async def future_jams(ctx):
+async def fst(ctx):
     global fdata
     await update_fdata()
     jam = 0
@@ -638,7 +645,7 @@ async def future_jams(ctx):
             if response.component.custom_id == 'ftim':
                 await response.respond(
                     embed=discord.Embed(title='⚠Уведомление⚠',
-                                        description=f"Таймер на '{data1[0]}' успешно установлен",
+                                        description=f"Таймер на `{data1[0]}` успешно установлен",
                                         colour=purple_color).set_image(url=data1[5]),
                     components=[ActionRow(Button(style=ButtonStyle.URL, label='Link', url=f'https://itch.io{data1[4]}',
                                                  custom_id='lin'))])
@@ -838,8 +845,10 @@ async def start_timer(ctx):
 
 @bot.command()
 async def helpb(ctx):
-    embed = discord.Embed(title="Help Command", description='''`/ust <profilename>` - check user profile
-    `/gst` - show upcoming gamejams''', colour=0x87CEEB)
+    embed = discord.Embed(title="❔Help Command", description='''`.ust <profilename>` - check user profile
+     from itch.io\n`.lust <profilename>` - check user profile
+     from local bot data\n`.gst` - show all gamejams\n`.fst` - show upcoming gamejams\n`.games` - show awalible
+     mini-games''', colour=0x87CEEB)
     await ctx.send(embed=embed)
 
 
@@ -963,4 +972,4 @@ responce = requests.get(link).text
 soup = BeautifulSoup(responce, 'html.parser')
 #  print(soup.prettify())
 # ---------------------------------main-------------------------------------------
-bot.run('OTU1MDU5NjQ5NTIxMDA0Njc0.YjcKnA.39qUywNorpuLjNq9sJep5_7vG_4')
+bot.run('')
