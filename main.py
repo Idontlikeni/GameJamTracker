@@ -1110,4 +1110,4 @@ responce = requests.get(link).text
 soup = BeautifulSoup(responce, 'html.parser')
 #  print(soup.prettify())
 # ---------------------------------main-------------------------------------------
-bot.run('OTM2OTE2Mzk3NzA2MDY3OTcw.YfUJZA.EHmStJjeSFaaiGgegWUyOOxFT5s')
+bot.run('')
