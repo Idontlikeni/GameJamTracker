@@ -4,53 +4,113 @@
 <head>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link href="fontawesome/css/all.css" rel="stylesheet">
+    <link href="../static/fontawesome/css/all.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../static/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@425&display=swap" rel="stylesheet">
     <title>GameJamBot | Get start</title>
+    <link rel="icon" type="image/png" href="../static/img/icon_without_background.png">
+    <script type="text/javascript" src="http://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=WdS_HMNqzNc1XkbdwmlmqBd61Y7BND0c1vFzkXmk6qJARz9tjf2ziCn2KeSseNgf" charset="UTF-8"></script>
 </head>
 
 <body>
+    <!--
     <nav>
         <div class="nav-wrapper">
             <a href="#!" class="brand-logo center">GameJamBot</a>
         </div>
     </nav>
+-->
+    <br><br>
+    <h1 class="bold white-text center-align">Next Jam:</h1>
     <br><br>
     <div class="container">
-        <div class="center-align">
-            <img class="responsive-img" src="https://img.itch.zone/aW1hZ2UyL2phbS8zMTY0MTAvNzkyNDcyNS5wbmc=/original/fBcoJf.png" alt="">
+        <div class="im center-align">
+            <img class="responsive-img" src="../static/img/nextjam.png" alt="">
         </div>
         <div class="tc center-align">
             <div class="timer center-align">
                 <div class="obv">
-                    <h1 id="demo" class="time shadowtext">Starts in 00 days 00 hours 00 minutes</h1>
-                    <h2 class="shadowtext">Joined: 2000</h2>
+                    <div class="container">
+                       <div class="coolbackground2">
+                       <div class="card1">
+                        <a href="{{ lin1 }}" target="_blank">
+                            <div class="nextimg center-align">
+                                <img class="center-align responsive-img" src="{{ im1 }}" alt="">
+                                <h3 class="shadowtext center-align bold white-text center-align">{{ name1 }}</h3>
+                            </div>
+                        </a>
+                    </div>
+                    </div>
+                    </div>
+                    <br>
+                    <h1 id="demo" class="time">Starts in 00 days 00 hours 00 minutes</h1>
+                    <h2 class="">Joined: {{ join1 }}</h2>
                 </div>
             </div>
         </div>
+        <br>
+        <h2 class="bold white-text center-align">3 subsequent Jams:</h2>
         <div class="cards row">
             <div class="col l4 s12">
-                <a href="#!">
-                    <div class="card">
-                        <img class="responsive-img" src="https://img.itch.zone/aW1hZ2UyL2phbS8zMTY0MTAvNzkyNDcyNS5wbmc=/original/fBcoJf.png" alt="">
+                <a href="{{ lin2 }}" target="_blank">
+                    <div class="coolbackground">
+                        <div class="card1">
+                            <div class="row">
+                                <div class="cardimg"><img class="responsive-img" src="{{ im2 }}" alt=""></div>
+                                <div class="name">
+                                    <h5>{{ name2 }}</h5>
+                                </div>
+                            </div>
+                            <div class="starts">
+                                <p>Starts in: {{ time2 }}</p>
+                            </div>
+                            <div class="starts">
+                                <p>{{ join2 }} Joined</p>
+                            </div>
+                        </div>
                     </div>
                 </a>
             </div>
             <div class="col l4 s12">
-                <a href="#!">
-                    <div class="card">
-                        <img class="responsive-img" src="https://img.itch.zone/aW1hZ2UyL2phbS8zMTY0MTAvNzkyNDcyNS5wbmc=/original/fBcoJf.png" alt="">
+                <a href="{{ lin3 }}" target="_blank">
+                    <div class="coolbackground">
+                        <div class="card1">
+                            <div class="row">
+                                <div class="cardimg"><img class="responsive-img" src="{{ im3 }}" alt=""></div>
+                                <div class="name">
+                                    <h5>{{ name3 }}</h5>
+                                </div>
+                            </div>
+                            <div class="starts">
+                                <p>Starts in: {{ time3 }}</p>
+                            </div>
+                            <div class="starts">
+                                <p>{{ join3 }} Joined</p>
+                            </div>
+                        </div>
                     </div>
                 </a>
             </div>
             <div class="col l4 s12">
-                <a href="#!">
-                    <div class="card">
-                        <img class="responsive-img" src="https://img.itch.zone/aW1hZ2UyL2phbS8zMTY0MTAvNzkyNDcyNS5wbmc=/original/fBcoJf.png" alt="">
+                <a href="{{ lin4 }}" target="_blank">
+                    <div class="coolbackground">
+                        <div class="card1">
+                            <div class="row">
+                                <div class="cardimg"><img class="responsive-img" src="{{ im4 }}" alt=""></div>
+                                <div class="name">
+                                    <h5>{{ name4 }}</h5>
+                                </div>
+                            </div>
+                            <div class="starts">
+                                <p>Starts in: {{ time4 }}</p>
+                            </div>
+                            <div class="starts">
+                                <p>{{ join4 }} Joined</p>
+                            </div>
+                        </div>
                     </div>
                 </a>
             </div>
@@ -58,12 +118,12 @@
         <br>
         <div class="container">
             <div class="center-align row downloadbtn">
-                <a href="#!">DOWNLOAD DISCORD BOT</a>
+                <a href="https://discord.com/oauth2/authorize?client_id=936916397706067970&permissions=537159744&scope=applications.commands%20bot" target="_blank">INVITE DISCORD BOT</a>
             </div>
         </div>
     </div>
     <br><br><br><br>
-<!--
+    <!--
     <p id="demo" class="white-text"></p>
     <br><br><br><br>
 -->
@@ -81,7 +141,7 @@
                     <a href="https://ok.ru/" target="_blank" rel="nofollow"><i class="soc fab fa-odnoklassniki"></i></a>
                 </div>
                 <div class="right-align col s12 l6">
-                    <p class="white-text">Copiright &copy; 2022. | Made by IE squad.</p>
+                    <p class="white-text">Copiright &copy; 2022. | <a class="white-text" href="https://github.com/Idontlikeni/GameJamTracker" target="_blank">Made by IE squad.</a></p>
                 </div>
             </div>
         </div>
@@ -93,7 +153,7 @@
         let m = "minutes";
         let s = "seconds";
         // Set the date we're counting down to
-        var countDownDate = new Date("Jan 5, 2024 15:37:25").getTime();
+        var countDownDate = new Date("{{ time1 }}").getTime();
 
         // Update the count down every 1 second
         var x = setInterval(function() {
@@ -131,8 +191,7 @@
             } else {
                 s = "seconds";
             }
-            document.getElementById("demo").innerHTML = "Starts in " + days + " " + d + " " + hours + " " + h + " " +
-                minutes + " " + m + " " + seconds + " " + s;
+            document.getElementById("demo").innerHTML = "Starts in " + days + "d " + hours + "h " + minutes + "m " + seconds + "s";
 
             // If the count down is finished, write some text
             if (distance < 0) {
