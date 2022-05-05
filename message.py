@@ -19,6 +19,8 @@ list_len = 5
 intents = discord.Intents.all()
 intents.members = True
 bot = ComponentsBot(command_prefix='.', description=description, intents=intents)
+blue_color = 0x87CEEB
+purple_color = 0xf954f6
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.INFO)
@@ -29,19 +31,16 @@ response_id = 0
 response_id_timer = 0
 data = []
 fdata = []
-roles_dct = dict()
-roles_dct_num = dict()
-role_message_id = 942058070215905341  # ID of the message that can be reacted to to add/remove a role.
-blue_color = 0x87CEEB
-purple_color = 0xf954f6
 dashes = ['\u2680', '\u2681', '\u2682', '\u2683', '\u2684', '\u2685']
-emoji_to_role = {}
-# discord.PartialEmoji(name='1️⃣'): 942069045543456798,
-#     # ID of the role associated with unicode emoji '🔴'.
-#     discord.PartialEmoji(name='2️⃣'): 942070012921933884,
-#     # ID of the role associated with unicode emoji '🟡'.
-#     discord.PartialEmoji(name='3️⃣'): 942070442515116073,
-#     # ID of the role associated with unicode emoji '🟡'.
+role_message_id = 942058070215905341  # ID of the message that can be reacted to to add/remove a role.
+emoji_to_role = {
+    discord.PartialEmoji(name='1️⃣'): 942069045543456798,
+    # ID of the role associated with unicode emoji '🔴'.
+    discord.PartialEmoji(name='2️⃣'): 942070012921933884,
+    # ID of the role associated with unicode emoji '🟡'.
+    discord.PartialEmoji(name='3️⃣'): 942070442515116073,
+    # ID of the role associated with unicode emoji '🟡'.
+}
 
 
 def parser(url):
@@ -92,9 +91,9 @@ def top(count: int):
             names.append(i.text)
     for i in dat:
         if 'title' in str(i):
-            ong = False
+            ong = ''
         else:
-            ong = True
+            ong = 'Ongoing, ends: '
         time = i.text[:-1].split('T')
         datet = list(map(int, time[0].split('-')))
         my_date = dt.date(datet[0], datet[1], datet[-1])
@@ -102,7 +101,7 @@ def top(count: int):
         my_time = dt.time(datet[0], datet[1], datet[-1])
         my_datetime = dt.datetime.combine(my_date, my_time)
         delta_time1 = dt.timedelta(hours=3)
-        dates.append((ong, my_datetime + delta_time1))
+        dates.append(ong + str(my_datetime + delta_time1))
     for i in lin:
         links.append(str(i).split('a href="')[1].split('"')[0])
     links = links[::2]
@@ -115,45 +114,34 @@ def top(count: int):
     for i in data:
         if 'Ongoing' in i[1]:
             data.remove(i)
-    data = sorted(data, key=lambda student: student[1])
-    #  data.reverse()
+    data = sorted(data, key=lambda student: student[-1])
+    data.reverse()
     data = data[:count]
-    #  for i in data:
-        #  print(i)
+    for i in data:
+        print(i)
     return data
 
-def check(n):
-    if n:
-        return 'Ongoing, '
-    else:
-        return ''
 
 async def timer(name, date, context, delta):
     i = 0
     while True:
         msg = await context.fetch_message(role_message_id)
         arr = top(list_len)
-        await msg.edit(content='\n'.join([f"{j + 1} - {arr[j][0]}(" + check(arr[j][1][0]) + " Date: " + str(arr[j][1][1]) + " )" for j in range(list_len)]))
-        for j in range(list_len):
-            print(arr[j][0], arr[j][1][1] - dt.datetime.now())
-            delt = arr[j][1][1] - dt.datetime.now()
-            print(delt, type(delt))
-            if delt.days < 0 and delt.hours <= 1:
-                await context.send(f"@{roles_dct_num[j]} your jam starts soon!")
-        #  print(arr[i][1], dt.datetime.now(), arr[i][1][1] - dt.datetime.now(), sep='|')
+        await msg.edit(content='\n'.join([f"{i + 1} - {arr[i][0]}" for i in range(list_len)]))
         i += 1
         await asyncio.sleep(delta)
 
 
-async def timer_to_future(name, ctx, jam_time, response, img, link):
+async def timer_to_future(name, ctx, jam_time, response, img, link, author):
     # await ctx.send(f'Таймер успешно установлен.')
     while True:
         if jam_time < dt.datetime.now():
             # await ctx.send(f'{ctx.author.mention}, Джем {name} начался.')
             # await response.respond(content=f'{ctx.author.mention}, Джем {name} начался.')
-            await response.reply(f'{ctx.author.mention}',
+            await response.reply(f'{author.mention}',
                                  embed=discord.Embed(title='⚠Уведомление⚠',
-                                                     description=f'Джем {name} начался.').set_image(url=img),
+                                                     description=f'Джем `{name}` начался.',
+                                                     colour=purple_color).set_image(url=img),
                                  components=[
                                      ActionRow(Button(style=ButtonStyle.URL, label='Link', url=f'https://itch.io{link}',
                                                       custom_id='lin'))])
@@ -563,7 +551,6 @@ async def games(ctx):
                                            )
 
 
-
 @bot.command()
 async def gst(ctx):
     global data
@@ -573,7 +560,8 @@ async def gst(ctx):
     data1 = data[jam]
     msg = await ctx.send('All jams:',
                          embed=discord.Embed(title=data1[0],
-                                             description=f'Date: {data1[1]} \n Joined: {data1[-1]}').set_image(
+                                             description=f'Date: {data1[1]} \n Joined: {data1[-1]}',
+                                             colour=blue_color).set_image(
                              url=data1[3]),
                          components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
                                                Button(style=ButtonStyle.URL, label='Link',
@@ -595,7 +583,8 @@ async def gst(ctx):
                     jam = len(data) - 1
         data1 = data[jam]
         await msg.edit('All jams:', embed=discord.Embed(title=data1[0],
-                                                        description=f'Date: {data1[1]} \n Joined: {data1[-1]}').set_image(
+                                                        description=f'Date: {data1[1]} \n Joined: {data1[-1]}',
+                                                        colour=blue_color).set_image(
             url=data1[3]),
                        components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
                                              Button(style=ButtonStyle.URL, label='Link',
@@ -617,67 +606,6 @@ async def gst(ctx):
     # for b in block:
     #    await ctx.send('\t'.join(b.text.split('T')))
 
-
-@bot.command()
-async def future_jams(ctx):
-    global fdata
-    await update_fdata()
-    jam = 0
-    data = fdata
-    #  print(data)
-    data1 = data[jam]
-    msg = await ctx.send('Future jams:',
-                         embed=discord.Embed(title=data1[0],
-                                             description=f'Date: {data1[1]} \nTime to: {data1[3].days} days {data1[3].seconds // 3600} hours \nJoined: {data1[-1]}').set_image(
-                             url=data1[5]),
-                         components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='fprev'),
-                                               Button(style=ButtonStyle.URL, label='Link',
-                                                      url=f'https://itch.io{data1[4]}',
-                                                      custom_id='lin'),
-                                               Button(style=ButtonStyle.red, label='Set timer', custom_id='ftim'),
-                                               Button(style=ButtonStyle.green, label='Next🡲', custom_id='fnex'))
-                                     ]
-                         )
-    while True:
-        response = await bot.wait_for("button_click")
-        if response.channel == ctx.channel:
-            if response.component.custom_id == 'fnex':
-                jam += 1
-                if jam == len(data):
-                    jam = 0
-            if response.component.custom_id == 'fprev':
-                jam -= 1
-                if jam == -1:
-                    jam = len(data) - 1
-            if response.component.custom_id == 'ftim':
-                response = await response.respond(
-                    embed=discord.Embed(title='⚠Уведомление⚠',
-                                        description=f'Таймер на {data1[0]} успешно установлен').set_image(url=data1[5]),
-                    components=[ActionRow(Button(style=ButtonStyle.URL, label='Link', url=f'https://itch.io{data1[4]}',
-                                                 custom_id='lin'))])
-                await asyncio.gather(asyncio.create_task(
-                    timer_to_future(data1[0], ctx, data1[2], msg,
-                                    data1[5], data1[4])))
-                # await asyncio.gather(asyncio.create_task(
-                #     timer_to_future(data1[0], ctx, data1[2] - dt.timedelta(days=11, hours=7, minutes=15), msg,
-                #                     data1[5], data1[4])))
-                return
-        data1 = data[jam]
-        await msg.edit('Future jams:', embed=discord.Embed(title=data1[0],
-                                                           description=f'Date: {data1[1]} \nTime to: {data1[3].days} days {data1[3].seconds // 3600} hours \nJoined: {data1[-1]}').set_image(
-            url=data1[5]),
-                       components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='fprev'),
-                                             Button(style=ButtonStyle.URL, label='Link',
-                                                    url=f'https://itch.io{data1[4]}', custom_id='lin'),
-                                             Button(style=ButtonStyle.red, label='Set timer', custom_id='ftim'),
-                                             Button(style=ButtonStyle.green, label='Next🡲', custom_id='fnex'))
-                                   ])
-        try:
-            await response.respond()
-            # print('b')
-        except:
-            # print('c')
-            pass
 
 @bot.command()
 async def fst(ctx):
@@ -776,9 +704,6 @@ async def fst(ctx):
             pass
 
 
-
-
-
 @bot.command()
 async def ust(ctx, *profilename: str):
     # await ctx.send(parser(f'https://itch.io/profile/{profilename}'))
@@ -803,7 +728,7 @@ async def ust(ctx, *profilename: str):
     ava = str(soup.find_all('div', class_="avatar")[0]).split("url('")[1].split("')")[0]
     if '/static/images/' in ava:
         ava = 'https://itch.io/' + ava
-    #  print('ava', ava)
+    print('ava', ava)
     rg = soup.find_all('abbr')
     stats.append(f'Registration date {rg[0].text}')
     for i in gms:
@@ -817,11 +742,11 @@ async def ust(ctx, *profilename: str):
     for i in statiscs:
         i = str(i).split('</div><div class="stat_label">')
         stats.append(i[0].split('>')[-1] + ' ' + i[1].split('<')[0])
-    #  print(name)
-    #  print(stats)
+    print(name)
+    print(stats)
     for i in range(len(games)):
         data.append([games[i], imgs[i], links[i]])
-    #  print(data)
+    print(data)
     stat = ''
     for i in range(len(stats)):
         if i == 0:
@@ -840,11 +765,11 @@ async def ust(ctx, *profilename: str):
         s = i
         shgm += f"embed=discord.Embed(title='{s[0]}', description='{s[2]}'), "
     shgm += ']'
-    #  print(shgm)
+    print(shgm)
     if response_id == id:
         if games:
             await ctx.send(
-                embed=discord.Embed(title=name, description=stat).set_image(
+                embed=discord.Embed(title=name, description=stat, colour=purple_color).set_image(
                     url=ava),
                 components=[ActionRow(
                     Button(style=ButtonStyle.URL, label='Profile', url=f'https://itch.io/profile/{profilename}',
@@ -853,9 +778,9 @@ async def ust(ctx, *profilename: str):
                            custom_id='lin'),
                     Button(style=ButtonStyle.green, label='Show games', custom_id='nex'))])
             response = await bot.wait_for("button_click")
-            #  print(response)
+            print(response)
             if response_id == id:
-                msg = await ctx.send(embed=discord.Embed(title=data[0][0]).set_image(
+                msg = await ctx.send(embed=discord.Embed(title=data[0][0], colour=blue_color).set_image(
                     url=data[0][1]),
                     components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
                                           Button(style=ButtonStyle.URL, label='Link',
@@ -866,9 +791,9 @@ async def ust(ctx, *profilename: str):
                     await response.respond()
                 except:
                     pass
-                #  print(msg.id)
+                print(msg.id)
                 while True:
-                    #  print(id, response_id)
+                    print(id, response_id)
                     if response_id > id:
                         break
                     response = await bot.wait_for("button_click")
@@ -882,11 +807,11 @@ async def ust(ctx, *profilename: str):
                             if jam == -1:
                                 jam = len(data) - 1
                     data1 = data[jam]
-                    #  print(data1, jam)
-                    #  print(data1[1])
-                    #  print(data[1][1])
-                    #  print(data[0][1])
-                    await msg.edit(embed=discord.Embed(title=data1[0]).set_image(
+                    print(data1, jam)
+                    print(data1[1])
+                    print(data[1][1])
+                    print(data[0][1])
+                    await msg.edit(embed=discord.Embed(title=data1[0], colour=blue_color).set_image(
                         url=data1[1]),
                         components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
                                               Button(style=ButtonStyle.URL, label='Link',
@@ -902,7 +827,7 @@ async def ust(ctx, *profilename: str):
                 return
         else:
             await ctx.send(
-                embed=discord.Embed(title=name, description=stat).set_image(
+                embed=discord.Embed(title=name, description=stat, colour=purple_color).set_image(
                     url=ava),
                 components=[ActionRow(
                     Button(style=ButtonStyle.URL, label='Profile', url=f'https://itch.io/profile/{profilename}',
@@ -915,7 +840,7 @@ async def ust(ctx, *profilename: str):
 @bot.command()
 async def start_timer(ctx):
     await asyncio.gather(
-        asyncio.create_task(timer("test", "sadasda", ctx, 30)))
+        asyncio.create_task(timer("test", "sadasda", ctx, 10)))
 
 
 @bot.command()
@@ -923,7 +848,7 @@ async def helpb(ctx):
     embed = discord.Embed(title="❔Help Command", description='''`.ust <profilename>` - check user profile
      from itch.io\n`.lust <profilename>` - check user profile
      from local bot data\n`.gst` - show all gamejams\n`.fst` - show upcoming gamejams\n`.games` - show available
-     mini-games\n`write_top <number_of_rows>` - create message for subscription\n`set_message_id <id>` - set id of subscription message''', colour=0x87CEEB)
+     mini-games''', colour=0x87CEEB)
     await ctx.send(embed=embed)
 
 
@@ -938,26 +863,19 @@ async def set_message_id(ctx, msg_id: int):
     global role_message_id
     role_message_id = msg_id
     await asyncio.gather(
-        asyncio.create_task(timer("test", "sadasda", ctx, 30)))
+        asyncio.create_task(timer("test", "sadasda", ctx, 10)))
 
 
 @bot.command()
 async def write_top(ctx, num: int):
     global list_len
-    num = min(10, num)
-    message = await ctx.send('\n'.join([f"{i + 1} - " for i in range(num)]))
+    await ctx.send('\n'.join([f"{i + 1} - " for i in range(num)]))
     list_len = num
-    global role_message_id
-    role_message_id = message.id
-    await asyncio.gather(
-        asyncio.create_task(timer("test", "sadasda", ctx, 30)))
 
 
 @bot.command()
-async def add_role(ctx, emoji, jam_num:int, role_id: int):
+async def add_role(ctx, emoji, role_id: int):
     emoji_to_role[discord.PartialEmoji(name=emoji)] = role_id
-    roles_dct[discord.PartialEmoji(name=emoji)] = get(ctx.guild.roles, id=role_id)
-    roles_dct_num[jam_num] = role_id
     print(f'{emoji} set to {get(ctx.guild.roles, id=role_id)}')
 
 
@@ -1054,4 +972,4 @@ responce = requests.get(link).text
 soup = BeautifulSoup(responce, 'html.parser')
 #  print(soup.prettify())
 # ---------------------------------main-------------------------------------------
-bot.run('OTM2OTE2Mzk3NzA2MDY3OTcw.YfUJZA.EHmStJjeSFaaiGgegWUyOOxFT5s')
+bot.run('')
