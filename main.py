@@ -36,13 +36,6 @@ blue_color = 0x87CEEB
 purple_color = 0xf954f6
 dashes = ['\u2680', '\u2681', '\u2682', '\u2683', '\u2684', '\u2685']
 emoji_to_role = {}
-# discord.PartialEmoji(name='1️⃣'): 942069045543456798,
-#     # ID of the role associated with unicode emoji '🔴'.
-#     discord.PartialEmoji(name='2️⃣'): 942070012921933884,
-#     # ID of the role associated with unicode emoji '🟡'.
-#     discord.PartialEmoji(name='3️⃣'): 942070442515116073,
-#     # ID of the role associated with unicode emoji '🟡'.
-
 
 def parser(url):
     htm = ''
