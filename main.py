@@ -35,7 +35,7 @@ role_message_id = 942058070215905341  # ID of the message that can be reacted to
 blue_color = 0x87CEEB
 purple_color = 0xf954f6
 dashes = ['\u2680', '\u2681', '\u2682', '\u2683', '\u2684', '\u2685']
-emoji_to_role = {}
+emoji_to_role = dict()
 
 def parser(url):
     htm = ''
