@@ -31,11 +31,13 @@ data = []
 fdata = []
 roles_dct = dict()
 roles_dct_num = dict()
-role_message_id = 942058070215905341  # ID of the message that can be reacted to to add/remove a role.
+role_message_id = 942058070215905341  # ID of the message that can be reacted to to add/remove a
+# role.
 blue_color = 0x87CEEB
 purple_color = 0xf954f6
 dashes = ['\u2680', '\u2681', '\u2682', '\u2683', '\u2684', '\u2685']
 emoji_to_role = dict()
+
 
 def parser(url):
     htm = ''
@@ -112,8 +114,9 @@ def top(count: int):
     #  data.reverse()
     data = data[:count]
     #  for i in data:
-        #  print(i)
+    #  print(i)
     return data
+
 
 def check(n):
     if n:
@@ -121,12 +124,15 @@ def check(n):
     else:
         return ''
 
+
 async def timer(name, date, context, delta):
     i = 0
     while True:
         msg = await context.fetch_message(role_message_id)
         arr = top(list_len)
-        await msg.edit(content='\n'.join([f"{j + 1} - {arr[j][0]}(" + check(arr[j][1][0]) + " Date: " + str(arr[j][1][1]) + " )" for j in range(list_len)]))
+        await msg.edit(content='\n'.join(
+            [f"{j + 1} - {arr[j][0]}(" + check(arr[j][1][0]) + " Date: " + str(arr[j][1][1]) + " )"
+             for j in range(list_len)]))
         for j in range(list_len):
             print(arr[j][0], arr[j][1][1] - dt.datetime.now())
             delt = arr[j][1][1] - dt.datetime.now()
@@ -146,9 +152,11 @@ async def timer_to_future(name, ctx, jam_time, response, img, link):
             # await response.respond(content=f'{ctx.author.mention}, Джем {name} начался.')
             await response.reply(f'{ctx.author.mention}',
                                  embed=discord.Embed(title='⚠Уведомление⚠',
-                                                     description=f'Джем {name} начался.').set_image(url=img),
+                                                     description=f'Джем {name} начался.').set_image(
+                                     url=img),
                                  components=[
-                                     ActionRow(Button(style=ButtonStyle.URL, label='Link', url=f'https://itch.io{link}',
+                                     ActionRow(Button(style=ButtonStyle.URL, label='Link',
+                                                      url=f'https://itch.io{link}',
                                                       custom_id='lin'))])
             break
         await asyncio.sleep(300)
@@ -242,7 +250,8 @@ async def update_fdata():
     fdata = []
     for i in range(len(names)):
         fdata.append(
-            (names[i], dates[i], dates1[i], deltime[i], links[i], images[i], int(''.join(joined[i].split(',')))))
+            (names[i], dates[i], dates1[i], deltime[i], links[i], images[i],
+             int(''.join(joined[i].split(',')))))
     fdata = list(filter(lambda x: 'Ongoing, ends:' not in x[1], fdata))
     fdata = sorted(fdata, key=lambda x: x[2])
     print(fdata)
@@ -313,7 +322,8 @@ async def lust(ctx, *name):
     if score:
         await ctx.reply('💥Статистика💥',
                         embed=discord.Embed(title=f'Статистика пользователя: `{name}`:',
-                                            description=f'Всего очков: {score[0][0]}\nИгр сыграно: {total[0][0]}\n'
+                                            description=f'Всего очков: {score[0][0]}\nИгр сыграно: '
+                                                        f'{total[0][0]}\n '
                                                         f'Игр выигрыно: {win[0][0]}\n'
                                                         f'Помощей в чате: {chat[0][0]}\n'
                                                         f'Добавлено таймеров: {timers[0][0]}',
@@ -329,29 +339,41 @@ async def lust(ctx, *name):
 async def games(ctx):
     msg = await ctx.send('Выбор мини-игры:',
                          embed=discord.Embed(title='Все мини-игры:',
-                                             description=f'1️⃣Случайное число.\n\nПростой рандомайзер чисел от 1 до'
-                                                         f' 100.\n\n--------------------\n\n2️⃣Кости.\n\nБот подбросит'
-                                                         f' специально для вас 2 игральные кости. Сколько на них'
-                                                         f' выпадет?\n\n-------------------\n\n3️⃣Угадай число.\n\nБот'
-                                                         f' загадает число от 1 до 10. Ваша задача - угадать его.'
-                                                         f' Сможете ли вы? Ваши шансы на успех равны 10%.',
+                                             description=f'1️⃣Случайное число.\n\nПростой '
+                                                         f'рандомайзер чисел от 1 до '
+                                                         f' 100.\n\n--------------------\n\n2'
+                                                         f'️⃣Кости.\n\nБот подбросит '
+                                                         f' специально для вас 2 игральные кости. '
+                                                         f'Сколько на них '
+                                                         f' выпадет?\n\n-------------------\n\n3'
+                                                         f'️⃣Угадай число.\n\nБот '
+                                                         f' загадает число от 1 до 10. Ваша задача '
+                                                         f'- угадать его. '
+                                                         f' Сможете ли вы? Ваши шансы на успех '
+                                                         f'равны 10%.',
                                              colour=purple_color),
                          components=[
-                             ActionRow(Button(style=ButtonStyle.grey, label='1️⃣Случайное число', custom_id='g1'),
-                                       Button(style=ButtonStyle.grey, label='2️⃣Кости', custom_id='g2'),
-                                       Button(style=ButtonStyle.grey, label='3️⃣Угадай число', custom_id='g3'))
+                             ActionRow(Button(style=ButtonStyle.grey, label='1️⃣Случайное число',
+                                              custom_id='g1'),
+                                       Button(style=ButtonStyle.grey, label='2️⃣Кости',
+                                              custom_id='g2'),
+                                       Button(style=ButtonStyle.grey, label='3️⃣Угадай число',
+                                              custom_id='g3'))
                          ],
                          )
     response = await bot.wait_for("button_click")
     if response.channel == ctx.channel:
         if response.component.custom_id == 'g1':
             await response.respond(embed=discord.Embed(title="🎮Мини-игра Случайное число🎰",
-                                                       description=f'Простой рандомайзер чисел от 1 до 100.'
+                                                       description=f'Простой рандомайзер чисел от '
+                                                                   f'1 до 100. '
                                                                    f'\n\nВы хотите начать игру?',
                                                        colour=blue_color),
                                    components=[
-                                       ActionRow(Button(style=ButtonStyle.grey, label='Да✅', custom_id='yes1'),
-                                                 Button(style=ButtonStyle.grey, label='Нет❌', custom_id='no1'))
+                                       ActionRow(Button(style=ButtonStyle.grey, label='Да✅',
+                                                        custom_id='yes1'),
+                                                 Button(style=ButtonStyle.grey, label='Нет❌',
+                                                        custom_id='no1'))
                                    ],
                                    )
             response = await bot.wait_for("button_click")
@@ -359,12 +381,13 @@ async def games(ctx):
                 if response.component.custom_id == 'yes1':
                     await response.respond(embed=discord.Embed(title="🎮Мини-игра Случайное число🎰",
                                                                description=f'Бот загадал число'
-                                                                           f' ✨ `{random.randint(1, 100)}` ✨',
+                                                                f' ✨ `{random.randint(1, 100)}` ✨',
                                                                colour=purple_color)
                                            )
                     con = sqlite3.connect('statistic/statistics.db')
                     cur = con.cursor()
-                    score = cur.execute(f"""SELECT score FROM stats WHERE user == '{response.author}'""").fetchall()
+                    score = cur.execute(
+                        f"""SELECT score FROM stats WHERE user == '{response.author}'""").fetchall()
                     rnd_games = cur.execute(f"""SELECT rnd FROM stats WHERE
                      user == '{response.author}'""").fetchall()
                     con.commit()
@@ -373,7 +396,8 @@ async def games(ctx):
                     if not score:
                         con = sqlite3.connect('statistic/statistics.db')
                         cur = con.cursor()
-                        score = cur.execute(f"""INSERT INTO stats(user, score, rnd, total_games, win_games, cube, 
+                        score = cur.execute(
+                            f"""INSERT INTO stats(user, score, rnd, total_games, win_games, cube, 
                         chat_help, timers_added) VALUES('{response.author}', 1, 1, 0, 0, 0, 0, 0)""").fetchall()
                         con.commit()
                         con.close()
@@ -399,8 +423,10 @@ async def games(ctx):
                                                                    f'\n\nВы хотите начать игру?',
                                                        colour=blue_color),
                                    components=[
-                                       ActionRow(Button(style=ButtonStyle.grey, label='Да✅', custom_id='yes2'),
-                                                 Button(style=ButtonStyle.grey, label='Нет❌', custom_id='no2'))
+                                       ActionRow(Button(style=ButtonStyle.grey, label='Да✅',
+                                                        custom_id='yes2'),
+                                                 Button(style=ButtonStyle.grey, label='Нет❌',
+                                                        custom_id='no2'))
                                    ],
                                    )
             response = await bot.wait_for("button_click")
@@ -414,7 +440,8 @@ async def games(ctx):
                                            )
                     con = sqlite3.connect('statistic/statistics.db')
                     cur = con.cursor()
-                    score = cur.execute(f"""SELECT score FROM stats WHERE user == '{response.author}'""").fetchall()
+                    score = cur.execute(
+                        f"""SELECT score FROM stats WHERE user == '{response.author}'""").fetchall()
                     cube = cur.execute(f"""SELECT cube FROM stats WHERE
                                          user == '{response.author}'""").fetchall()
                     con.commit()
@@ -423,7 +450,8 @@ async def games(ctx):
                     if not score:
                         con = sqlite3.connect('statistic/statistics.db')
                         cur = con.cursor()
-                        score = cur.execute(f"""INSERT INTO stats(user, score, rnd, total_games, win_games, cube, 
+                        score = cur.execute(
+                            f"""INSERT INTO stats(user, score, rnd, total_games, win_games, cube, 
                                             chat_help, timers_added) 
                                             VALUES('{response.author}', 1, 0, 0, 0, 1, 0, 0)""").fetchall()
                         con.commit()
@@ -451,8 +479,10 @@ async def games(ctx):
                                                                    f'\n\nВы хотите начать игру?',
                                                        colour=blue_color),
                                    components=[
-                                       ActionRow(Button(style=ButtonStyle.grey, label='Да✅', custom_id='yes3'),
-                                                 Button(style=ButtonStyle.grey, label='Нет❌', custom_id='no3'))
+                                       ActionRow(Button(style=ButtonStyle.grey, label='Да✅',
+                                                        custom_id='yes3'),
+                                                 Button(style=ButtonStyle.grey, label='Нет❌',
+                                                        custom_id='no3'))
                                    ],
                                    )
             response = await bot.wait_for("button_click")
@@ -465,26 +495,37 @@ async def games(ctx):
                                                                            f' выберите число.',
                                                                colour=purple_color),
                                            components=[
-                                               ActionRow(Button(style=ButtonStyle.grey, label='1️⃣', custom_id='n1'),
-                                                         Button(style=ButtonStyle.grey, label='2️⃣', custom_id='n2'),
-                                                         Button(style=ButtonStyle.grey, label='3️⃣', custom_id='n3'),
-                                                         Button(style=ButtonStyle.grey, label='4️⃣', custom_id='n4'),
-                                                         Button(style=ButtonStyle.grey, label='5️⃣', custom_id='n5')),
-                                               ActionRow(Button(style=ButtonStyle.grey, label='6️⃣', custom_id='n6'),
-                                                         Button(style=ButtonStyle.grey, label='7️⃣', custom_id='n7'),
-                                                         Button(style=ButtonStyle.grey, label='8️⃣', custom_id='n8'),
-                                                         Button(style=ButtonStyle.grey, label='9️⃣', custom_id='n9'),
-                                                         Button(style=ButtonStyle.grey, label='🔟', custom_id='n10'))
+                                               ActionRow(Button(style=ButtonStyle.grey, label='1️⃣',
+                                                                custom_id='n1'),
+                                                         Button(style=ButtonStyle.grey, label='2️⃣',
+                                                                custom_id='n2'),
+                                                         Button(style=ButtonStyle.grey, label='3️⃣',
+                                                                custom_id='n3'),
+                                                         Button(style=ButtonStyle.grey, label='4️⃣',
+                                                                custom_id='n4'),
+                                                         Button(style=ButtonStyle.grey, label='5️⃣',
+                                                                custom_id='n5')),
+                                               ActionRow(Button(style=ButtonStyle.grey, label='6️⃣',
+                                                                custom_id='n6'),
+                                                         Button(style=ButtonStyle.grey, label='7️⃣',
+                                                                custom_id='n7'),
+                                                         Button(style=ButtonStyle.grey, label='8️⃣',
+                                                                custom_id='n8'),
+                                                         Button(style=ButtonStyle.grey, label='9️⃣',
+                                                                custom_id='n9'),
+                                                         Button(style=ButtonStyle.grey, label='🔟',
+                                                                custom_id='n10'))
                                            ]
                                            )
                     response = await bot.wait_for("button_click")
                     if response.channel == ctx.channel:
                         if response.component.custom_id == 'n' + str(num):
-                            await response.respond(embed=discord.Embed(title="🎮Мини-игра Угадай число🔮",
-                                                                       description=f'🔥Всё верно!🔥 Бот загадал число'
-                                                                                   f' 💫 `{num}` 💫',
-                                                                       colour=blue_color)
-                                                   )
+                            await response.respond(
+                                embed=discord.Embed(title="🎮Мини-игра Угадай число🔮",
+                                                    description=f'🔥Всё верно!🔥 Бот загадал число'
+                                                                f' 💫 `{num}` 💫',
+                                                    colour=blue_color)
+                            )
                             con = sqlite3.connect('statistic/statistics.db')
                             cur = con.cursor()
                             score = cur.execute(
@@ -499,7 +540,8 @@ async def games(ctx):
                             if not score:
                                 con = sqlite3.connect('statistic/statistics.db')
                                 cur = con.cursor()
-                                score = cur.execute(f"""INSERT INTO stats(user, score, rnd, total_games, win_games,
+                                score = cur.execute(
+                                    f"""INSERT INTO stats(user, score, rnd, total_games, win_games,
                                  cube, chat_help, timers_added) 
                                  VALUES('{response.author}', 20, 0, 1, 1, 0, 0, 0)""").fetchall()
                                 con.commit()
@@ -509,18 +551,20 @@ async def games(ctx):
                                 cur = con.cursor()
                                 score = cur.execute(f"""UPDATE stats SET score = {score[0][0] + 20}
                                                     where user = '{response.author}'""").fetchall()
-                                score = cur.execute(f"""UPDATE stats SET total_games = {total[0][0] + 1}
+                                score = cur.execute(
+                                    f"""UPDATE stats SET total_games = {total[0][0] + 1}
                                                     where user = '{response.author}'""").fetchall()
                                 score = cur.execute(f"""UPDATE stats SET win_games = {win[0][0] + 1}
                                                     where user = '{response.author}'""").fetchall()
                                 con.commit()
                                 con.close()
                         else:
-                            await response.respond(embed=discord.Embed(title="🎮Мини-игра Угадай число🔮",
-                                                                       description=f'❌К сожалению вы не правы.❌ Бот '
-                                                                                   f'загадал число 💫 `{num}` 💫',
-                                                                       colour=blue_color)
-                                                   )
+                            await response.respond(
+                                embed=discord.Embed(title="🎮Мини-игра Угадай число🔮",
+                                                    description=f'❌К сожалению вы не правы.❌ Бот '
+                                                                f'загадал число 💫 `{num}` 💫',
+                                                    colour=blue_color)
+                            )
                             con = sqlite3.connect('statistic/statistics.db')
                             cur = con.cursor()
                             score = cur.execute(
@@ -535,7 +579,8 @@ async def games(ctx):
                             if not score:
                                 con = sqlite3.connect('statistic/statistics.db')
                                 cur = con.cursor()
-                                score = cur.execute(f"""INSERT INTO stats(user, score, rnd, total_games, win_games,
+                                score = cur.execute(
+                                    f"""INSERT INTO stats(user, score, rnd, total_games, win_games,
                                                     cube, chat_help, timers_added) 
                                                     VALUES('{response.author}', 1, 0, 1, 0, 0, 0, 0)""").fetchall()
                                 con.commit()
@@ -545,7 +590,8 @@ async def games(ctx):
                                 cur = con.cursor()
                                 score = cur.execute(f"""UPDATE stats SET score = {score[0][0] + 1}
                                                                         where user = '{response.author}'""").fetchall()
-                                score = cur.execute(f"""UPDATE stats SET total_games = {total[0][0] + 1}
+                                score = cur.execute(
+                                    f"""UPDATE stats SET total_games = {total[0][0] + 1}
                                                                         where user = '{response.author}'""").fetchall()
                                 con.commit()
                                 con.close()
@@ -554,7 +600,6 @@ async def games(ctx):
                                                                description=f'❌Игра окончена.❌',
                                                                colour=purple_color)
                                            )
-
 
 
 @bot.command()
@@ -568,12 +613,13 @@ async def gst(ctx):
                          embed=discord.Embed(title=data1[0],
                                              description=f'Date: {data1[1]} \n Joined: {data1[-1]}').set_image(
                              url=data1[3]),
-                         components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
-                                               Button(style=ButtonStyle.URL, label='Link',
-                                                      url=f'https://itch.io{data1[2]}',
-                                                      custom_id='lin'),
-                                               Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex'))
-                                     ]
+                         components=[ActionRow(
+                             Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
+                             Button(style=ButtonStyle.URL, label='Link',
+                                    url=f'https://itch.io{data1[2]}',
+                                    custom_id='lin'),
+                             Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex'))
+                         ]
                          )
     while True:
         response = await bot.wait_for("button_click")
@@ -590,11 +636,12 @@ async def gst(ctx):
         await msg.edit('All jams:', embed=discord.Embed(title=data1[0],
                                                         description=f'Date: {data1[1]} \n Joined: {data1[-1]}').set_image(
             url=data1[3]),
-                       components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
-                                             Button(style=ButtonStyle.URL, label='Link',
-                                                    url=f'https://itch.io{data1[2]}', custom_id='lin'),
-                                             Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex'))
-                                   ])
+                       components=[ActionRow(
+                           Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
+                           Button(style=ButtonStyle.URL, label='Link',
+                                  url=f'https://itch.io{data1[2]}', custom_id='lin'),
+                           Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex'))
+                       ])
         try:
             await response.respond()
             # print('b')
@@ -623,13 +670,14 @@ async def future_jams(ctx):
                          embed=discord.Embed(title=data1[0],
                                              description=f'Date: {data1[1]} \nTime to: {data1[3].days} days {data1[3].seconds // 3600} hours \nJoined: {data1[-1]}').set_image(
                              url=data1[5]),
-                         components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='fprev'),
-                                               Button(style=ButtonStyle.URL, label='Link',
-                                                      url=f'https://itch.io{data1[4]}',
-                                                      custom_id='lin'),
-                                               Button(style=ButtonStyle.red, label='Set timer', custom_id='ftim'),
-                                               Button(style=ButtonStyle.green, label='Next🡲', custom_id='fnex'))
-                                     ]
+                         components=[ActionRow(
+                             Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='fprev'),
+                             Button(style=ButtonStyle.URL, label='Link',
+                                    url=f'https://itch.io{data1[4]}',
+                                    custom_id='lin'),
+                             Button(style=ButtonStyle.red, label='Set timer', custom_id='ftim'),
+                             Button(style=ButtonStyle.green, label='Next🡲', custom_id='fnex'))
+                         ]
                          )
     while True:
         response = await bot.wait_for("button_click")
@@ -645,9 +693,11 @@ async def future_jams(ctx):
             if response.component.custom_id == 'ftim':
                 response = await response.respond(
                     embed=discord.Embed(title='⚠Уведомление⚠',
-                                        description=f'Таймер на {data1[0]} успешно установлен').set_image(url=data1[5]),
-                    components=[ActionRow(Button(style=ButtonStyle.URL, label='Link', url=f'https://itch.io{data1[4]}',
-                                                 custom_id='lin'))])
+                                        description=f'Таймер на {data1[0]} успешно установлен').set_image(
+                        url=data1[5]),
+                    components=[ActionRow(
+                        Button(style=ButtonStyle.URL, label='Link', url=f'https://itch.io{data1[4]}',
+                               custom_id='lin'))])
                 await asyncio.gather(asyncio.create_task(
                     timer_to_future(data1[0], ctx, data1[2], msg,
                                     data1[5], data1[4])))
@@ -659,18 +709,20 @@ async def future_jams(ctx):
         await msg.edit('Future jams:', embed=discord.Embed(title=data1[0],
                                                            description=f'Date: {data1[1]} \nTime to: {data1[3].days} days {data1[3].seconds // 3600} hours \nJoined: {data1[-1]}').set_image(
             url=data1[5]),
-                       components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='fprev'),
-                                             Button(style=ButtonStyle.URL, label='Link',
-                                                    url=f'https://itch.io{data1[4]}', custom_id='lin'),
-                                             Button(style=ButtonStyle.red, label='Set timer', custom_id='ftim'),
-                                             Button(style=ButtonStyle.green, label='Next🡲', custom_id='fnex'))
-                                   ])
+                       components=[ActionRow(
+                           Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='fprev'),
+                           Button(style=ButtonStyle.URL, label='Link',
+                                  url=f'https://itch.io{data1[4]}', custom_id='lin'),
+                           Button(style=ButtonStyle.red, label='Set timer', custom_id='ftim'),
+                           Button(style=ButtonStyle.green, label='Next🡲', custom_id='fnex'))
+                       ])
         try:
             await response.respond()
             # print('b')
         except:
             # print('c')
             pass
+
 
 @bot.command()
 async def fst(ctx):
@@ -686,13 +738,15 @@ async def fst(ctx):
                                                          f' {data1[3].seconds // 3600} hours \nJoined: {data1[-1]}',
                                              colour=blue_color).set_image(
                              url=data1[5]),
-                         components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='fprev'),
-                                               Button(style=ButtonStyle.green, label='Next🡲', custom_id='fnex')),
-                                     ActionRow(Button(style=ButtonStyle.URL, label='Link',
-                                                      url=f'https://itch.io{data1[4]}',
-                                                      custom_id='lin'),
-                                               Button(style=ButtonStyle.red, label='Set timer', custom_id='ftim'))
-                                     ]
+                         components=[ActionRow(
+                             Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='fprev'),
+                             Button(style=ButtonStyle.green, label='Next🡲', custom_id='fnex')),
+                             ActionRow(Button(style=ButtonStyle.URL, label='Link',
+                                              url=f'https://itch.io{data1[4]}',
+                                              custom_id='lin'),
+                                       Button(style=ButtonStyle.red, label='Set timer',
+                                              custom_id='ftim'))
+                         ]
                          )
     while True:
         response = await bot.wait_for("button_click")
@@ -712,11 +766,13 @@ async def fst(ctx):
                     embed=discord.Embed(title='⚠Уведомление⚠',
                                         description=f"Таймер на `{data1[0]}` успешно установлен",
                                         colour=purple_color).set_image(url=data1[5]),
-                    components=[ActionRow(Button(style=ButtonStyle.URL, label='Link', url=f'https://itch.io{data1[4]}',
-                                                 custom_id='lin'))])
+                    components=[ActionRow(
+                        Button(style=ButtonStyle.URL, label='Link', url=f'https://itch.io{data1[4]}',
+                               custom_id='lin'))])
                 con = sqlite3.connect('statistic/statistics.db')
                 cur = con.cursor()
-                score = cur.execute(f"""SELECT score FROM stats WHERE user == '{response.author}'""").fetchall()
+                score = cur.execute(
+                    f"""SELECT score FROM stats WHERE user == '{response.author}'""").fetchall()
                 timers = cur.execute(f"""SELECT timers_added FROM stats WHERE
                                      user == '{response.author}'""").fetchall()
                 con.commit()
@@ -725,7 +781,8 @@ async def fst(ctx):
                 if not score:
                     con = sqlite3.connect('statistic/statistics.db')
                     cur = con.cursor()
-                    score = cur.execute(f"""INSERT INTO stats(user, score, rnd, total_games, win_games, cube, 
+                    score = cur.execute(
+                        f"""INSERT INTO stats(user, score, rnd, total_games, win_games, cube, 
                                         chat_help, timers_added) 
                                         VALUES('{response.author}', 1, 0, 0, 0, 0, 0, 1)""").fetchall()
                     con.commit()
@@ -754,22 +811,21 @@ async def fst(ctx):
                                                                        f' \nJoined: {data1[-1]}',
                                                            colour=blue_color).set_image(
             url=data1[5]),
-                       components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='fprev'),
-                                             Button(style=ButtonStyle.green, label='Next🡲', custom_id='fnex')),
-                                   ActionRow(Button(style=ButtonStyle.URL, label='Link',
-                                                    url=f'https://itch.io{data1[4]}',
-                                                    custom_id='lin'),
-                                             Button(style=ButtonStyle.red, label='Set timer', custom_id='ftim'))
-                                   ])
+                       components=[ActionRow(
+                           Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='fprev'),
+                           Button(style=ButtonStyle.green, label='Next🡲', custom_id='fnex')),
+                           ActionRow(Button(style=ButtonStyle.URL, label='Link',
+                                            url=f'https://itch.io{data1[4]}',
+                                            custom_id='lin'),
+                                     Button(style=ButtonStyle.red, label='Set timer',
+                                            custom_id='ftim'))
+                       ])
         try:
             await response.respond()
             # print('b')
         except:
             # print('c')
             pass
-
-
-
 
 
 @bot.command()
@@ -840,9 +896,11 @@ async def ust(ctx, *profilename: str):
                 embed=discord.Embed(title=name, description=stat).set_image(
                     url=ava),
                 components=[ActionRow(
-                    Button(style=ButtonStyle.URL, label='Profile', url=f'https://itch.io/profile/{profilename}',
+                    Button(style=ButtonStyle.URL, label='Profile',
+                           url=f'https://itch.io/profile/{profilename}',
                            custom_id='lin'),
-                    Button(style=ButtonStyle.URL, label='Creator page', url=f'https://{profilename}.itch.io',
+                    Button(style=ButtonStyle.URL, label='Creator page',
+                           url=f'https://{profilename}.itch.io',
                            custom_id='lin'),
                     Button(style=ButtonStyle.green, label='Show games', custom_id='nex'))])
             response = await bot.wait_for("button_click")
@@ -850,11 +908,12 @@ async def ust(ctx, *profilename: str):
             if response_id == id:
                 msg = await ctx.send(embed=discord.Embed(title=data[0][0]).set_image(
                     url=data[0][1]),
-                    components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
-                                          Button(style=ButtonStyle.URL, label='Link',
-                                                 url=data[0][2], custom_id='lin'),
-                                          Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex'))
-                                ])
+                    components=[ActionRow(
+                        Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
+                        Button(style=ButtonStyle.URL, label='Link',
+                               url=data[0][2], custom_id='lin'),
+                        Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex'))
+                    ])
                 try:
                     await response.respond()
                 except:
@@ -881,11 +940,12 @@ async def ust(ctx, *profilename: str):
                     #  print(data[0][1])
                     await msg.edit(embed=discord.Embed(title=data1[0]).set_image(
                         url=data1[1]),
-                        components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
-                                              Button(style=ButtonStyle.URL, label='Link',
-                                                     url=data1[2], custom_id='lin'),
-                                              Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex'))
-                                    ])
+                        components=[ActionRow(
+                            Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
+                            Button(style=ButtonStyle.URL, label='Link',
+                                   url=data1[2], custom_id='lin'),
+                            Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex'))
+                        ])
                     try:
                         await response.respond()
                     except:
@@ -898,9 +958,11 @@ async def ust(ctx, *profilename: str):
                 embed=discord.Embed(title=name, description=stat).set_image(
                     url=ava),
                 components=[ActionRow(
-                    Button(style=ButtonStyle.URL, label='Profile', url=f'https://itch.io/profile/{profilename}',
+                    Button(style=ButtonStyle.URL, label='Profile',
+                           url=f'https://itch.io/profile/{profilename}',
                            custom_id='lin'),
-                    Button(style=ButtonStyle.URL, label='Creator page', url=f'https://{profilename}.itch.io',
+                    Button(style=ButtonStyle.URL, label='Creator page',
+                           url=f'https://{profilename}.itch.io',
                            custom_id='lin'))])
             return
 
@@ -916,7 +978,8 @@ async def helpb(ctx):
     embed = discord.Embed(title="❔Help Command", description='''`.ust <profilename>` - check user profile
      from itch.io\n`.lust <profilename>` - check user profile
      from local bot data\n`.gst` - show all gamejams\n`.fst` - show upcoming gamejams\n`.games` - show available
-     mini-games\n`write_top <number_of_rows>` - create message for subscription\n`set_message_id <id>` - set id of subscription message''', colour=0x87CEEB)
+     mini-games\n`write_top <number_of_rows>` - create message for subscription\n`set_message_id <id>` - set id of subscription message''',
+                          colour=0x87CEEB)
     await ctx.send(embed=embed)
 
 
@@ -947,7 +1010,7 @@ async def write_top(ctx, num: int):
 
 
 @bot.command()
-async def add_role(ctx, emoji, jam_num:int, role_id: int):
+async def add_role(ctx, emoji, jam_num: int, role_id: int):
     emoji_to_role[discord.PartialEmoji(name=emoji)] = role_id
     roles_dct[discord.PartialEmoji(name=emoji)] = get(ctx.guild.roles, id=role_id)
     roles_dct_num[jam_num] = role_id
