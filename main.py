@@ -272,6 +272,12 @@ async def roll(ctx, dice: str):
     await ctx.send(result)
 
 
+@bot.command()
+async def zawarudo(ctx):
+    await ctx.channel.edit(slowmode_delay=9)
+    await ctx.send(f"Set the slowmode delay in this channel to 9 seconds!")
+
+
 @bot.command(description='For when you wanna settle the score some other way')
 async def choose(ctx, *choices: str):
     """Chooses between multiple choices."""
