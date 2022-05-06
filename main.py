@@ -830,7 +830,6 @@ async def fst(ctx):
 
 @bot.command()
 async def ust(ctx, *profilename: str):
-    # await ctx.send(parser(f'https://itch.io/profile/{profilename}'))
     global response_id
     response_id += 1
     id = response_id
