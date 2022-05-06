@@ -1275,12 +1275,15 @@ async def start_timer(ctx):
 @bot.command()
 async def helpb(ctx):
     embed = discord.Embed(title="❔Help Command", description='''`.ust <profilename>` - check user profile from itch.io
-     \n`.lust <profilename>` - check user profile from local bot data
+     \n`.lust <nickname>#<profile id>` - check user profile from local bot data from discord
      \n`.gst` - show all gamejams
-     \n`.fst` - show upcoming gamejams\n`.games` - show available mini-games
+     \n`.fst` - show upcoming gamejams
      \n`.write_top <number_of_rows>` - create message for subscription
      \n`.set_message_id <id>` - set id of subscription message
-     \n`.add_role <emojii> <jam_num_in_top> <role_id>` - adds emojii that acts like a button for subscription''',
+     \n`.add_role <emojii> <jam_num_in_top> <role_id>` - adds emojii that acts like a button for subscription
+     \n`.games` - show available mini-games
+     \n`.lfg` - show latest featured games
+     \n`.dlg <count>` - show latiest `<count>` devlogs''',
                           colour=0x87CEEB)
     await ctx.send(embed=embed)
 
