@@ -61,6 +61,7 @@ def parser(url):
         games.append(i.text)
     im = soup.find_all('div', class_="game_thumb")
     for i in im:
+        print(i)
         imgs.append(str(i).split('url(\'')[1].split('\')')[0])
     ln = soup.find_all('a', class_="thumb_link game_link")
     for i in ln:
@@ -1030,7 +1031,7 @@ async def ust(ctx, *profilename: str):
         games.append(i.text)
     im = soup.find_all('div', class_="game_thumb")
     for i in im:
-        imgs.append(str(i).split('url(\'')[1].split('\')')[0])
+        imgs.append(i.get('url'))
     ln = soup.find_all('a', class_="thumb_link game_link")
     for i in ln:
         links.append(str(i).split('href="')[1].split('"')[0])
