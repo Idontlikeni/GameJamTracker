@@ -310,7 +310,16 @@ async def toki_wa_igoku_hashimeta(ctx):
 
 @bot.command()
 async def yrandomizer(ctx):
-    await ctx.send(random.choice(link))
+    await ctx.send(random.choice(links))
+
+
+@bot.command()
+async def qwerty(ctx):
+    embed = discord.Embed(title="You found a secret!", description='''`.zawarudo`
+     \n`.toki_wa_igoku_hashimeta`
+     \n`.yrandomizer`''',
+                          colour=0x87CEEB)
+    await ctx.send(embed=embed)
 
 
 @bot.command(description='For when you wanna settle the score some other way')
