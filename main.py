@@ -39,6 +39,16 @@ role_message_id = 942058070215905341  # ID of the message that can be reacted to
 blue_color = 0x87CEEB
 purple_color = 0xf954f6
 dashes = ['\u2680', '\u2681', '\u2682', '\u2683', '\u2684', '\u2685']
+links = ['https://youtu.be/hCqUw7g7KJg',
+'https://youtu.be/PMp8NQjWXjs',
+'https://youtu.be/R3wG2l2KSWs',
+'https://youtu.be/FuJM-90oMvo',
+'https://youtu.be/eA0BujmYxSo',
+'https://youtu.be/eA0BujmYxSo',
+'https://youtu.be/sBR8GTUxznM',
+'https://youtu.be/2C5AGTRnlzE',
+'https://youtu.be/eEa3vDXatXg',
+]
 emoji_to_role = dict()
 
 
@@ -289,7 +299,18 @@ async def roll(ctx, dice: str):
 @bot.command()
 async def zawarudo(ctx):
     await ctx.channel.edit(slowmode_delay=9)
-    await ctx.send(f"Set the slowmode delay in this channel to 9 seconds!")
+    await ctx.send(f"ZA WAAAAAARUDO")
+
+
+@bot.command()
+async def toki_wa_igoku_hashimeta(ctx):
+    await ctx.channel.edit(slowmode_delay=0)
+    await ctx.send(f"Toki wa igoku hashimeta")
+
+
+@bot.command()
+async def yrandomizer(ctx):
+    await ctx.send(random.choice(link))
 
 
 @bot.command(description='For when you wanna settle the score some other way')
@@ -1347,4 +1368,4 @@ responce = requests.get(link).text
 soup = BeautifulSoup(responce, 'html.parser')
 #  print(soup.prettify())
 # ---------------------------------main-------------------------------------------
-bot.run('OTU1MDU5NjQ5NTIxMDA0Njc0.YjcKnA.aYABh4RRt-fITsGyw_7MJqSozS8')
+bot.run('')
