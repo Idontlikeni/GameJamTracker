@@ -19,6 +19,9 @@ list_len = 5
 intents = discord.Intents.all()
 intents.members = True
 bot = ComponentsBot(command_prefix='.', description=description, intents=intents)
+blue_color = 0x87CEEB
+purple_color = 0xf954f6
+white_color = 0xFFFFFF
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.INFO)
@@ -37,6 +40,7 @@ blue_color = 0x87CEEB
 purple_color = 0xf954f6
 dashes = ['\u2680', '\u2681', '\u2682', '\u2683', '\u2684', '\u2685']
 emoji_to_role = dict()
+
 
 
 def parser(url):
@@ -301,6 +305,300 @@ async def repeat(ctx, times: int, content='repeating...'):
 async def joined(ctx, member: discord.Member):
     """Says when a member joined."""
     await ctx.send('{0.name} joined in {0.joined_at}'.format(member))
+
+
+@bot.command()
+async def lfg(ctx):
+    jam = 0
+    data = []
+    names = []
+    tags = []
+    links = []
+    images = []
+    prices = []
+    description = []
+    url = 'https://itch.io'
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'lxml')
+    feat = soup.find_all('div', class_="featured_game_grid_widget")[0]
+    print('type', type(feat))
+    lin_im = feat.find_all('a', class_="game_thumb")[:15]
+    name_price = feat.find_all('div', class_="label")[:15]
+    gm = feat.find_all('div', class_='game_cell')[:15]
+    # t = 1
+    for i in lin_im:
+        # print(i)
+        # t += 1
+        # print(i.get('href'))
+        links.append(i.get('href'))
+        i = i.find_all('img')[0]
+        # print(i.get('data-lazy_src'))
+        images.append(i.get('data-lazy_src'))
+        # print()
+    # print(len(lin_im))
+    for i in name_price:
+        j = i.find_all('div')[0].text
+        j1 = i.find_all('a')[0].get('title')
+        # print(j)
+        # print(j1)
+        prices.append(j)
+        names.append(j1)
+    for i in gm:
+        j = i.find_all('div', class_='sub')
+        j1 = i.find_all('div', class_='sub cell_tags')
+        if j1:
+            j1 = list(map(lambda x: x.text, j1))[0]
+            tags.append(j1)
+        else:
+            tags.append('')
+        # print(j1)
+        for y in j:
+            d = y.text
+            # print(d)
+            if j1:
+                if d != j1:
+                    description.append(d)
+            else:
+                description.append(d)
+        # print(i.find_all('div', class_='sub'))
+    for i in range(len(names)):
+        data.append((names[i], links[i], images[i], prices[i], tags[i], description[i]))
+    # print(description)
+    # print(tags)
+    print(data)
+    # for i in range(len(names)):
+    #     data.append((names[i], dates[i], links[i], images[i], int(''.join(joined[i].split(',')))))
+    data1 = data[jam]
+    if data1[4]:
+        msg = await ctx.send(f'Latest Featured Games (count: {len(data)}):',
+                             embed=discord.Embed(title=f'🎮{data1[0]}',
+                                                 description=f'🏷️Tags: {data1[4]}\n\n📖Description: {data1[-1]}'
+                                                             f'\n\n💵Price: {data1[3]}',
+                                                 colour=white_color).set_image(
+                                 url=data1[2]),
+                             components=[
+                                 ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev2'),
+                                           Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex2')),
+                                 ActionRow(Button(style=ButtonStyle.URL, label='Link',
+                                                  url=f'{data1[1]}',
+                                                  custom_id='lin'),
+                                           Button(style=ButtonStyle.URL, label='View all',
+                                                  url=f'https://itch.io/games/new-and-popular/featured',
+                                                  custom_id='lin'))
+                             ]
+                             )
+    else:
+        msg = await ctx.send(f'Latest Featured Games (count: {len(data)}):',
+                             embed=discord.Embed(title=f'🎮{data1[0]}',
+                                                 description=f'📖Description: {data1[-1]}\n\n💵Price: {data1[3]}',
+                                                 colour=white_color).set_image(
+                                 url=data1[2]),
+                             components=[
+                                 ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev2'),
+                                           Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex2')),
+                                 ActionRow(Button(style=ButtonStyle.URL, label='Link',
+                                                  url=f'{data1[1]}',
+                                                  custom_id='lin'),
+                                           Button(style=ButtonStyle.URL, label='View all',
+                                                  url=f'https://itch.io/games/new-and-popular/featured',
+                                                  custom_id='lin'))
+                             ]
+                             )
+    while True:
+        response = await bot.wait_for("button_click")
+        if response.channel == ctx.channel:
+            if response.component.custom_id == 'nex2':
+                jam += 1
+                if jam == len(data):
+                    jam = 0
+            if response.component.custom_id == 'prev2':
+                jam -= 1
+                if jam == -1:
+                    jam = len(data) - 1
+        data1 = data[jam]
+        if data1[4]:
+            await msg.edit(f'Latest Featured Games (count: {len(data)}):',
+                           embed=discord.Embed(title=f'🎮{data1[0]}',
+                                               description=f'🏷️Tags: {data1[4]}\n\n📖Description: {data1[-1]}'
+                                                           f'\n\n💵Price: {data1[3]}',
+                                               colour=white_color).set_image(
+                               url=data1[2]),
+                           components=[
+                               ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev2'),
+                                         Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex2')),
+                               ActionRow(Button(style=ButtonStyle.URL, label='Link',
+                                                url=f'{data1[1]}',
+                                                custom_id='lin'),
+                                         Button(style=ButtonStyle.URL, label='View all',
+                                                url=f'https://itch.io/games/new-and-popular/featured',
+                                                custom_id='lin'))
+                           ]
+                           )
+        else:
+            await msg.send(f'Latest Featured Games (count: {len(data)}):',
+                           embed=discord.Embed(title=f'🎮{data1[0]}',
+                                               description=f'📖Description: {data1[-1]}\n\n💵Price: {data1[3]}',
+                                               colour=white_color).set_image(
+                               url=data1[2]),
+                           components=[
+                               ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev2'),
+                                         Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex2')),
+                               ActionRow(Button(style=ButtonStyle.URL, label='Link',
+                                                url=f'{data1[1]}',
+                                                custom_id='lin'),
+                                         Button(style=ButtonStyle.URL, label='View all',
+                                                url=f'https://itch.io/games/new-and-popular/featured',
+                                                custom_id='lin'))
+                           ]
+                           )
+        try:
+            await response.respond()
+            # print('b')
+        except:
+            # print('c')
+            pass
+
+
+@bot.command()
+async def dlg(ctx, count):
+    data = []
+    jam = 0
+    # names = []
+    # tags = []
+    # links = []
+    # images = []
+    # prices = []
+    # description = []
+    url = 'https://itch.io/devlogs'
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'lxml')
+    feat = soup.find_all('section', class_="blog_post_grid_widget")[0]
+    # print(feat)
+    one_el = feat.find_all('div', class_="blog_post", limit=int(count))
+    # lin_im = one_el.find_all('a')
+    # ot_in = one_el.find_all('div', class_='post_details')
+    # t = 1
+    for i in one_el:
+        # print(i)
+        link = i.find('a').get('href')
+        img = i.find('img').get('data-lazy_src')
+        det = i.find('div', class_='post_details')
+        tit = det.find('div', class_='post_title')
+        name = tit.find('a').text
+        comm = tit.find('div', class_='post_comments')
+        if comm:
+            comm = comm.text
+        else:
+            comm = 0
+        like = tit.find('div', class_='post_likes')
+        if like:
+            like = like.text
+        else:
+            like = 0
+        game = det.find('div', class_='game_title').text
+        tag = det.find('div', class_='post_type')
+        if tag:
+            tag = tag.text
+        else:
+            tag = ''
+        desc = det.find('div', class_='summary').text
+        data.append((name, link, img, comm, like, game, tag, desc))
+        # print(link)
+        # print(img)
+        # print(name)
+        # print(comm)
+        # print(like)
+        # print(game)
+        # print(tag)
+        # print(desc)
+        # print()
+    print(data)
+    data1 = data[jam]
+    print(data1[5])
+    description = ''
+    for i in range(3, 8):
+        if i == 3:
+            if data1[i]:
+                description += f'💬Comments: {data1[i]}'
+        elif i == 4:
+            if data1[i]:
+                description += f'\n👍Likes: {data1[i]}'
+        elif i == 5:
+            if data1[i]:
+                description += f'\n\n🎮Game: {data1[i]}'
+        elif i == 6:
+            if data1[i]:
+                description += f'\n\n🏷️Tag: {data1[i]}'
+        elif i == 7:
+            if data1[i]:
+                description += f'\n\n📖Description: {data1[i]}'
+    msg = await ctx.send(f'Devlogs (count: {len(data)}):',
+                         embed=discord.Embed(title=data1[0],
+                                             description=description,
+                                             colour=white_color).set_image(
+                             url=data1[2]),
+                         components=[
+                             ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev3'),
+                                       Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex3')),
+                             ActionRow(Button(style=ButtonStyle.URL, label='Link',
+                                              url=f'{data1[1]}',
+                                              custom_id='lin'),
+                                       Button(style=ButtonStyle.URL, label='View all',
+                                              url=f'https://itch.io/devlogs',
+                                              custom_id='lin'))
+                         ]
+                         )
+    while True:
+        response = await bot.wait_for("button_click")
+        if response.channel == ctx.channel:
+            if response.component.custom_id == 'nex3':
+                jam += 1
+                if jam == len(data):
+                    jam = 0
+            if response.component.custom_id == 'prev3':
+                jam -= 1
+                if jam == -1:
+                    jam = len(data) - 1
+        data1 = data[jam]
+        description = ''
+        for i in range(3, 8):
+            if i == 3:
+                if data1[i]:
+                    description += f'💬Comments: {data1[i]}'
+            elif i == 4:
+                if data1[i]:
+                    description += f'\n👍Likes: {data1[i]}'
+            elif i == 5:
+                if data1[i]:
+                    description += f'\n\n🎮Game: {data1[i]}'
+            elif i == 6:
+                if data1[i]:
+                    description += f'\n\n🏷️Tag: {data1[i]}'
+            elif i == 7:
+                if data1[i]:
+                    description += f'\n\n📖Description: {data1[i]}'
+        await msg.edit(f'Devlogs (count: {len(data)}):',
+                       embed=discord.Embed(title=data1[0],
+                                           description=description,
+                                           colour=white_color).set_image(
+                           url=data1[2]),
+                       components=[
+                           ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev3'),
+                                     Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex3')),
+                           ActionRow(Button(style=ButtonStyle.URL, label='Link',
+                                            url=f'{data1[1]}',
+                                            custom_id='lin'),
+                                     Button(style=ButtonStyle.URL, label='View all',
+                                            url=f'https://itch.io/devlogs',
+                                            custom_id='lin'))
+                       ]
+                       )
+        try:
+            await response.respond()
+            # print('b')
+        except:
+            # print('c')
+            pass
 
 
 @bot.command()
@@ -725,6 +1023,7 @@ async def future_jams(ctx):
 
 
 @bot.command()
+
 async def fst(ctx):
     global fdata
     await update_fdata()
@@ -830,6 +1129,7 @@ async def fst(ctx):
 
 @bot.command()
 async def ust(ctx, *profilename: str):
+    # await ctx.send(parser(f'https://itch.io/profile/{profilename}'))
     global response_id
     response_id += 1
     id = response_id
