@@ -40,15 +40,15 @@ blue_color = 0x87CEEB
 purple_color = 0xf954f6
 dashes = ['\u2680', '\u2681', '\u2682', '\u2683', '\u2684', '\u2685']
 links = ['https://youtu.be/hCqUw7g7KJg',
-'https://youtu.be/PMp8NQjWXjs',
-'https://youtu.be/R3wG2l2KSWs',
-'https://youtu.be/FuJM-90oMvo',
-'https://youtu.be/eA0BujmYxSo',
-'https://youtu.be/eA0BujmYxSo',
-'https://youtu.be/sBR8GTUxznM',
-'https://youtu.be/2C5AGTRnlzE',
-'https://youtu.be/eEa3vDXatXg',
-]
+         'https://youtu.be/PMp8NQjWXjs',
+         'https://youtu.be/R3wG2l2KSWs',
+         'https://youtu.be/FuJM-90oMvo',
+         'https://youtu.be/eA0BujmYxSo',
+         'https://youtu.be/eA0BujmYxSo',
+         'https://youtu.be/sBR8GTUxznM',
+         'https://youtu.be/2C5AGTRnlzE',
+         'https://youtu.be/eEa3vDXatXg',
+         ]
 emoji_to_role = dict()
 
 
@@ -168,7 +168,8 @@ async def timer_to_future(name, ctx, jam_time, response, img, link, author):
                                                      description=f'Джем `{name}` начался.',
                                                      colour=purple_color).set_image(url=img),
                                  components=[
-                                     ActionRow(Button(style=ButtonStyle.URL, label='Link', url=f'https://itch.io{link}',
+                                     ActionRow(Button(style=ButtonStyle.URL, label='Link',
+                                                      url=f'https://itch.io{link}',
                                                       custom_id='lin'))])
             break
         await asyncio.sleep(300)
@@ -411,8 +412,10 @@ async def lfg(ctx):
                                                  colour=white_color).set_image(
                                  url=data1[2]),
                              components=[
-                                 ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev2'),
-                                           Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex2')),
+                                 ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous',
+                                                  custom_id='prev2'),
+                                           Button(style=ButtonStyle.green, label='Next🡲',
+                                                  custom_id='nex2')),
                                  ActionRow(Button(style=ButtonStyle.URL, label='Link',
                                                   url=f'{data1[1]}',
                                                   custom_id='lin'),
@@ -428,8 +431,10 @@ async def lfg(ctx):
                                                  colour=white_color).set_image(
                                  url=data1[2]),
                              components=[
-                                 ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev2'),
-                                           Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex2')),
+                                 ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous',
+                                                  custom_id='prev2'),
+                                           Button(style=ButtonStyle.green, label='Next🡲',
+                                                  custom_id='nex2')),
                                  ActionRow(Button(style=ButtonStyle.URL, label='Link',
                                                   url=f'{data1[1]}',
                                                   custom_id='lin'),
@@ -458,8 +463,10 @@ async def lfg(ctx):
                                                colour=white_color).set_image(
                                url=data1[2]),
                            components=[
-                               ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev2'),
-                                         Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex2')),
+                               ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous',
+                                                custom_id='prev2'),
+                                         Button(style=ButtonStyle.green, label='Next🡲',
+                                                custom_id='nex2')),
                                ActionRow(Button(style=ButtonStyle.URL, label='Link',
                                                 url=f'{data1[1]}',
                                                 custom_id='lin'),
@@ -475,8 +482,10 @@ async def lfg(ctx):
                                                colour=white_color).set_image(
                                url=data1[2]),
                            components=[
-                               ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev2'),
-                                         Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex2')),
+                               ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous',
+                                                custom_id='prev2'),
+                                         Button(style=ButtonStyle.green, label='Next🡲',
+                                                custom_id='nex2')),
                                ActionRow(Button(style=ButtonStyle.URL, label='Link',
                                                 url=f'{data1[1]}',
                                                 custom_id='lin'),
@@ -572,8 +581,10 @@ async def dlg(ctx, count):
                                              colour=white_color).set_image(
                              url=data1[2]),
                          components=[
-                             ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev3'),
-                                       Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex3')),
+                             ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous',
+                                              custom_id='prev3'),
+                                       Button(style=ButtonStyle.green, label='Next🡲',
+                                              custom_id='nex3')),
                              ActionRow(Button(style=ButtonStyle.URL, label='Link',
                                               url=f'{data1[1]}',
                                               custom_id='lin'),
@@ -617,8 +628,9 @@ async def dlg(ctx, count):
                                            colour=white_color).set_image(
                            url=data1[2]),
                        components=[
-                           ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev3'),
-                                     Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex3')),
+                           ActionRow(
+                               Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev3'),
+                               Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex3')),
                            ActionRow(Button(style=ButtonStyle.URL, label='Link',
                                             url=f'{data1[1]}',
                                             custom_id='lin'),
@@ -713,7 +725,7 @@ async def games(ctx):
                 if response.component.custom_id == 'yes1':
                     await response.respond(embed=discord.Embed(title="🎮Мини-игра Случайное число🎰",
                                                                description=f'Бот загадал число'
-                                                                f' ✨ `{random.randint(1, 100)}` ✨',
+                                                                           f' ✨ `{random.randint(1, 100)}` ✨',
                                                                colour=purple_color)
                                            )
                     con = sqlite3.connect('statistic/statistics.db')
@@ -946,12 +958,13 @@ async def gst(ctx):
                                              description=f'Date: {data1[1]} \n Joined: {data1[-1]}',
                                              colour=blue_color).set_image(
                              url=data1[3]),
-                         components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
-                                               Button(style=ButtonStyle.URL, label='Link',
-                                                      url=f'https://itch.io{data1[2]}',
-                                                      custom_id='lin'),
-                                               Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex'))
-                                     ]
+                         components=[ActionRow(
+                             Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
+                             Button(style=ButtonStyle.URL, label='Link',
+                                    url=f'https://itch.io{data1[2]}',
+                                    custom_id='lin'),
+                             Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex'))
+                         ]
                          )
     while True:
         response = await bot.wait_for("button_click")
@@ -969,11 +982,12 @@ async def gst(ctx):
                                                         description=f'Date: {data1[1]} \n Joined: {data1[-1]}',
                                                         colour=blue_color).set_image(
             url=data1[3]),
-                       components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
-                                             Button(style=ButtonStyle.URL, label='Link',
-                                                    url=f'https://itch.io{data1[2]}', custom_id='lin'),
-                                             Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex'))
-                                   ])
+                       components=[ActionRow(
+                           Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
+                           Button(style=ButtonStyle.URL, label='Link',
+                                  url=f'https://itch.io{data1[2]}', custom_id='lin'),
+                           Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex'))
+                       ])
         try:
             await response.respond()
             # print('b')
@@ -1163,21 +1177,25 @@ async def ust(ctx, *profilename: str):
                 embed=discord.Embed(title=name, description=stat, colour=purple_color).set_image(
                     url=ava),
                 components=[ActionRow(
-                    Button(style=ButtonStyle.URL, label='Profile', url=f'https://itch.io/profile/{profilename}',
+                    Button(style=ButtonStyle.URL, label='Profile',
+                           url=f'https://itch.io/profile/{profilename}',
                            custom_id='lin'),
-                    Button(style=ButtonStyle.URL, label='Creator page', url=f'https://{profilename}.itch.io',
+                    Button(style=ButtonStyle.URL, label='Creator page',
+                           url=f'https://{profilename}.itch.io',
                            custom_id='lin'),
                     Button(style=ButtonStyle.green, label='Show games', custom_id='nex'))])
             response = await bot.wait_for("button_click")
             print(response)
             if response_id == id:
-                msg = await ctx.send(embed=discord.Embed(title=data[0][0], colour=blue_color).set_image(
-                    url=data[0][1]),
-                    components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
-                                          Button(style=ButtonStyle.URL, label='Link',
-                                                 url=data[0][2], custom_id='lin'),
-                                          Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex'))
-                                ])
+                msg = await ctx.send(
+                    embed=discord.Embed(title=data[0][0], colour=blue_color).set_image(
+                        url=data[0][1]),
+                    components=[ActionRow(
+                        Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
+                        Button(style=ButtonStyle.URL, label='Link',
+                               url=data[0][2], custom_id='lin'),
+                        Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex'))
+                    ])
                 try:
                     await response.respond()
                 except:
@@ -1204,11 +1222,12 @@ async def ust(ctx, *profilename: str):
                     print(data[0][1])
                     await msg.edit(embed=discord.Embed(title=data1[0], colour=blue_color).set_image(
                         url=data1[1]),
-                        components=[ActionRow(Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
-                                              Button(style=ButtonStyle.URL, label='Link',
-                                                     url=data1[2], custom_id='lin'),
-                                              Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex'))
-                                    ])
+                        components=[ActionRow(
+                            Button(style=ButtonStyle.blue, label='🡰Previous', custom_id='prev'),
+                            Button(style=ButtonStyle.URL, label='Link',
+                                   url=data1[2], custom_id='lin'),
+                            Button(style=ButtonStyle.green, label='Next🡲', custom_id='nex'))
+                        ])
                     try:
                         await response.respond()
                     except:
@@ -1221,12 +1240,13 @@ async def ust(ctx, *profilename: str):
                 embed=discord.Embed(title=name, description=stat, colour=purple_color).set_image(
                     url=ava),
                 components=[ActionRow(
-                    Button(style=ButtonStyle.URL, label='Profile', url=f'https://itch.io/profile/{profilename}',
+                    Button(style=ButtonStyle.URL, label='Profile',
+                           url=f'https://itch.io/profile/{profilename}',
                            custom_id='lin'),
-                    Button(style=ButtonStyle.URL, label='Creator page', url=f'https://{profilename}.itch.io',
+                    Button(style=ButtonStyle.URL, label='Creator page',
+                           url=f'https://{profilename}.itch.io',
                            custom_id='lin'))])
             return
-
 
 
 @bot.command()
