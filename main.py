@@ -419,7 +419,7 @@ async def lfg(ctx):
                            ]
                            )
         else:
-            await msg.edit(f'Latest Featured Games (count: {len(data)}):',
+            await msg.send(f'Latest Featured Games (count: {len(data)}):',
                            embed=discord.Embed(title=f'🎮{data1[0]}',
                                                description=f'📖Description: {data1[-1]}\n\n💵Price: {data1[3]}',
                                                colour=white_color).set_image(
