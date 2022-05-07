@@ -1256,7 +1256,7 @@ async def start_timer(ctx):
 
 
 @bot.command()
-async def helpb(ctx):
+async def help(ctx):
     embed = discord.Embed(title="❔Help Command", description='''`.ust <profilename>` - check user profile from itch.io
      \n`.lust <nickname>#<profile id>` - check user profile from local bot data from discord
      \n`.gst` - show all gamejams
