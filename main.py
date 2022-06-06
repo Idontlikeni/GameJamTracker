@@ -10,6 +10,9 @@ import asyncio
 from discord_components import DiscordComponents, Button, ButtonStyle, ActionRow, ComponentsBot
 import logging
 import sqlite3
+import os
+from stay_alive import keep_alive
+key = os.environ['key']
 
 link = 'https://itch.io/jams/upcoming/featured'
 description = '''An example bot to showcase the discord.ext.commands extension
@@ -1397,4 +1400,5 @@ responce = requests.get(link).text
 soup = BeautifulSoup(responce, 'html.parser')
 #  print(soup.prettify())
 # ---------------------------------main-------------------------------------------
-bot.run('')
+keep_alive()
+bot.run(key)
