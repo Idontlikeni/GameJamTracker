@@ -1,2 +1,27 @@
 # GameJamTracker
 Virtual environment for tracking game jams
+
+Простой Дискорд-бот для отслеживания ивентов и игр с сайта itch.io.
+
+Команды бота:
+```
+.ust <profilename> - посмотреть профиль пользователя itch.io
+
+.lust <nickname>#<profile id> - посмотреть профиль на сервере discord
+
+.gst - показать все gamejams
+
+.fst - показать будущие gamejams
+
+.write_top <number_of_rows> - создать сообщение для напоминания
+
+.set_message_id <id> - поставить айди сообщения для напоминания
+
+.add_role <emojii> <jam_num_in_top> <role_id> - добавляет эмодзи которое служит кнопкой для напоминания
+
+.games - показать доступные мини игры
+
+.lfg - показать последние избранные игры
+
+.dlg <count> - показать последние <count> devlogs
+```
